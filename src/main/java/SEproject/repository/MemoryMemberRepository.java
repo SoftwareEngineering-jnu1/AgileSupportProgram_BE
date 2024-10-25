@@ -48,4 +48,16 @@ public class MemoryMemberRepository implements MemberRepository {
     public void clearStore() {
         store.clear();
     }
+
+/* 로그인&로그아웃&회원가입 테스트용 데이터
+    @PostConstruct
+    public void init() {
+        Member member = new Member();
+        member.setId(sequence.incrementAndGet());
+        member.setPassword("rhkraudrlf1!");
+        member.setUsername("곽명길");
+        member.setEmailId("gmg010217@gmail.com");
+        store.put(member.getId(), member);
+    }
+ */
 }

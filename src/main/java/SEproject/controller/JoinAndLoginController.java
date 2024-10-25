@@ -5,6 +5,8 @@ import SEproject.dto.MemberJoinDTO;
 import SEproject.dto.MemberLoginDTO;
 import SEproject.service.JoinAndLoginService;
 import jakarta.annotation.PostConstruct;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -44,7 +46,7 @@ public class JoinAndLoginController {
     }
 
     @PostMapping("SE/login")
-    public Map<String, String> login(@RequestBody MemberLoginDTO memberLoginDTO) {
+    public Map<String, String> login(@RequestBody MemberLoginDTO memberLoginDTO, HttpServletResponse response) {
         System.out.println("memberLoginDTO.getPassword() = " + memberLoginDTO.getPassword());
         System.out.println("memberLoginDTO.getEmail() = " + memberLoginDTO.getEmail());
         if(memberLoginDTO.getEmail() == null || memberLoginDTO.getPassword() == null) {
@@ -57,9 +59,23 @@ public class JoinAndLoginController {
 
         Member loginMember = joinAndLoginService.login(memberLoginDTO.getEmail(), memberLoginDTO.getPassword());
 
+        // 로그인이 실패할 경우
         if(loginMember == null) {
             return responseError;
         }
+
+        // 로그인이 성공한 경우 - 쿠키 생성
+        Cookie idCookie = new Cookie("memberId", String.valueOf(loginMember.getId()));
+        response.addCookie(idCookie);
+
+        return responseSuccess;
+    }
+
+    @PostMapping("SE/logout")
+    public Map<String, String> logout(HttpServletResponse response) {
+        Cookie cookie = new Cookie("memberId", null);
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
 
         return responseSuccess;
     }
