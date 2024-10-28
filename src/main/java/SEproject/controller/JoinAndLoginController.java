@@ -1,11 +1,13 @@
 package SEproject.controller;
 
+import SEproject.SessionManager;
 import SEproject.domain.Member;
 import SEproject.dto.MemberJoinDTO;
 import SEproject.dto.MemberLoginDTO;
 import SEproject.service.JoinAndLoginService;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -18,9 +20,11 @@ public class JoinAndLoginController {
     private final JoinAndLoginService joinAndLoginService;
     private final Map<String, String> responseSuccess = new HashMap<>();
     private final Map<String, String> responseError = new HashMap<>();
+    private final SessionManager sessionManager;
 
     @Autowired
-    public JoinAndLoginController(JoinAndLoginService joinAndLoginService) {
+    public JoinAndLoginController(JoinAndLoginService joinAndLoginService, SessionManager sessionManager) {
+        this.sessionManager = sessionManager;
         this.joinAndLoginService = joinAndLoginService;
     }
 
@@ -47,8 +51,6 @@ public class JoinAndLoginController {
 
     @PostMapping("SE/login")
     public Map<String, String> login(@RequestBody MemberLoginDTO memberLoginDTO, HttpServletResponse response) {
-        System.out.println("memberLoginDTO.getPassword() = " + memberLoginDTO.getPassword());
-        System.out.println("memberLoginDTO.getEmail() = " + memberLoginDTO.getEmail());
         if(memberLoginDTO.getEmail() == null || memberLoginDTO.getPassword() == null) {
             return responseError;
         } else if(memberLoginDTO.getEmail().equals(" ") || memberLoginDTO.getPassword().equals(" ")) {
@@ -64,18 +66,15 @@ public class JoinAndLoginController {
             return responseError;
         }
 
-        // 로그인이 성공한 경우 - 쿠키 생성
-        Cookie idCookie = new Cookie("memberId", String.valueOf(loginMember.getId()));
-        response.addCookie(idCookie);
+        // 로그인 성공 처리, 세션 관리자를 통하여 세션을 생성하고 회원 데이터 보관
+        sessionManager.createSession(loginMember, response);
 
         return responseSuccess;
     }
 
     @PostMapping("SE/logout")
-    public Map<String, String> logout(HttpServletResponse response) {
-        Cookie cookie = new Cookie("memberId", null);
-        cookie.setMaxAge(0);
-        response.addCookie(cookie);
+    public Map<String, String> logout(HttpServletRequest request) {
+        sessionManager.expire(request);
 
         return responseSuccess;
     }
