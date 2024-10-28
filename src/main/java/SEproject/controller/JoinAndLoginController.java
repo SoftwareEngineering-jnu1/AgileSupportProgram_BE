@@ -1,14 +1,13 @@
 package SEproject.controller;
 
-import SEproject.SessionManager;
 import SEproject.domain.Member;
 import SEproject.dto.MemberJoinDTO;
 import SEproject.dto.MemberLoginDTO;
 import SEproject.service.JoinAndLoginService;
+import SEproject.web.SessionConst;
 import jakarta.annotation.PostConstruct;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,11 +19,9 @@ public class JoinAndLoginController {
     private final JoinAndLoginService joinAndLoginService;
     private final Map<String, String> responseSuccess = new HashMap<>();
     private final Map<String, String> responseError = new HashMap<>();
-    private final SessionManager sessionManager;
 
     @Autowired
-    public JoinAndLoginController(JoinAndLoginService joinAndLoginService, SessionManager sessionManager) {
-        this.sessionManager = sessionManager;
+    public JoinAndLoginController(JoinAndLoginService joinAndLoginService) {
         this.joinAndLoginService = joinAndLoginService;
     }
 
@@ -50,7 +47,7 @@ public class JoinAndLoginController {
     }
 
     @PostMapping("SE/login")
-    public Map<String, String> login(@RequestBody MemberLoginDTO memberLoginDTO, HttpServletResponse response) {
+    public Map<String, String> login(@RequestBody MemberLoginDTO memberLoginDTO, HttpServletRequest request) {
         if(memberLoginDTO.getEmail() == null || memberLoginDTO.getPassword() == null) {
             return responseError;
         } else if(memberLoginDTO.getEmail().equals(" ") || memberLoginDTO.getPassword().equals(" ")) {
@@ -66,15 +63,21 @@ public class JoinAndLoginController {
             return responseError;
         }
 
-        // 로그인 성공 처리, 세션 관리자를 통하여 세션을 생성하고 회원 데이터 보관
-        sessionManager.createSession(loginMember, response);
+        // 로그인 성공 처리, 세션이 있으면 세션을 반환하고 없으면 신규 세선 생성
+        HttpSession session = request.getSession();
+        // 세션에 로그인 정보 보관 - 첫 번째 매개변수 : 키(문자열), 두 번째 매개변수 : 저장할 데이터 객체
+        session.setAttribute(SessionConst.LOGIN_MEMBER, loginMember);
 
         return responseSuccess;
     }
 
     @PostMapping("SE/logout")
     public Map<String, String> logout(HttpServletRequest request) {
-        sessionManager.expire(request);
+        // getSession의 기본값은 true이므로 false를 명시해야 함(의미없는 세션을 생성하지 않기 위함)
+        HttpSession session = request.getSession(false);
+        if(session != null) {
+            session.invalidate();
+        }
 
         return responseSuccess;
     }
