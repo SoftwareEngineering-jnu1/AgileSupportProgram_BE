@@ -1,0 +1,38 @@
+name: CI for SEProject
+
+on:
+  push:
+    branches:
+      - main            # main 브랜치로의 push를 감지하여 CI 실행
+      - 'feature/**'    # feature/로 시작하는 모든 브랜치의 push를 감지하여 CI 실행
+  pull_request:
+    branches:
+      - main            # main 브랜치로의 pull request를 감지하여 CI 실행
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out the code
+        uses: actions/checkout@v3
+
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: '23' 
+
+      - name: Cache Gradle dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Build with Gradle
+        run: ./gradlew build --no-daemon
+
+      - name: Run tests
+        run: ./gradlew test --no-daemon
+
