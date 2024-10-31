@@ -29,6 +29,10 @@ class MemoryMemberRepositoryTest {
     }
 
     @Test
+    void save() {
+    }
+
+    @Test
     void findById() {
         // when
         Member savedMember = memoryMemberRepository.findById(1L);
