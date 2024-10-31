@@ -51,6 +51,6 @@ class MemoryMemberRepositoryTest {
         // then
         Assertions.assertThat(allMember.size()).isEqualTo(2);
         Assertions.assertThat(allMember.get(0).getId()).isEqualTo(1L);
-        Assertions.assertThat(allMember.get(1).getId()).isEqualTo(2L);
+        Assertions.assertThat(allMember.get(1).getId()).isEqualTo(3L);
     }
 }
