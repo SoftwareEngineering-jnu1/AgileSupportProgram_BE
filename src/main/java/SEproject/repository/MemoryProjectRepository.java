@@ -1,6 +1,8 @@
 package SEproject.repository;
 
 import SEproject.domain.Project;
+import SEproject.dto.NewProjectDTO;
+import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,16 +10,17 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
+@Repository
 public class MemoryProjectRepository implements ProjectRepository{
     public static ConcurrentHashMap<Long, Project> store = new ConcurrentHashMap<>();
     public static AtomicLong sequence = new AtomicLong();
 
     @Override
-    public Project save(Project project) {
+    public Project save(NewProjectDTO newProjectDTO) {
         Project newproject = new Project();
         newproject.setId(sequence.incrementAndGet());
-        newproject.setProjectName(project.getProjectName());
-        newproject.setMembersId(new ArrayList<>(project.getMembersId()));
+        newproject.setProjectName(newProjectDTO.getProjectName());
+        newproject.setMembersId(new ArrayList<>(newProjectDTO.getMembersId()));
 
         store.put(newproject.getId(), newproject);
 

@@ -5,6 +5,7 @@ import SEproject.domain.Project;
 
 
 import SEproject.dto.MemberJoinDTO;
+import SEproject.dto.NewProjectDTO;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,20 +21,20 @@ class MemoryProjectRepositoryTest {
 
     @BeforeEach
     public void beforeEach() {
-        Project project1 = new Project();
-        project1.setProjectName("testproject1");
+        NewProjectDTO newProjectDTO1 = new NewProjectDTO();
+        newProjectDTO1.setProjectName("testproject1");
         List<Long> memberIds1 = new ArrayList<>();
         memberIds1.add(1L);
-        project1.setMembersId(memberIds1);
+        newProjectDTO1.setMembersId(memberIds1);
 
-        Project project2 = new Project();
-        project2.setProjectName("testproject2");
+        NewProjectDTO newProjectDTO2 = new NewProjectDTO();
+        newProjectDTO2.setProjectName("testproject2");
         List<Long> memberIds2 = new ArrayList<>();
         memberIds2.add(2L);
-        project2.setMembersId(memberIds2);
+        newProjectDTO2.setMembersId(memberIds2);
 
-        Project savedProject1 = projectRepository.save(project1);
-        Project savedProject2 = projectRepository.save(project2);
+        Project savedProject1 = projectRepository.save(newProjectDTO1);
+        Project savedProject2 = projectRepository.save(newProjectDTO2);
     }
 
     @Test
