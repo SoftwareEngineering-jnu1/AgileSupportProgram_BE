@@ -18,5 +18,8 @@ public class Epic {
     private Map<Long, Issue> issues = new HashMap<>();
     // 이슈 완료 여부
     private Map<Boolean, Issue> issuesComplete = new HashMap<>();
-    private List<Long> membersId = new ArrayList<>();
+    // 에픽 완료 여부
+    private Boolean isComplete = false;
+
+    private String title;
 }

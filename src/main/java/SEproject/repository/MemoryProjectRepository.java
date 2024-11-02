@@ -1,5 +1,6 @@
 package SEproject.repository;
 
+import SEproject.domain.Epic;
 import SEproject.domain.Project;
 import SEproject.dto.NewProjectDTO;
 import org.springframework.stereotype.Repository;
@@ -55,7 +56,18 @@ public class MemoryProjectRepository implements ProjectRepository{
     }
 
     @Override
+    public void addEpic(Long projectId, Long epicId) {
+        store.get(projectId).getEpicsId().add(epicId);
+    }
+
+
+    @Override
     public List<Long> findMemoIds(Long projectId) {
         return store.get(projectId).getMemosId();
+    }
+
+    @Override
+    public void addMemo(Long projectId, Long memoId) {
+        store.get(projectId).getMemosId().add(memoId);
     }
 }

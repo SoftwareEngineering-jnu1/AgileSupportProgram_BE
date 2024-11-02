@@ -18,6 +18,8 @@ public interface ProjectRepository {
     public List<Long> findMemberIds(Long projectId);
 
     public List<Long> findEpicIds(Long projectId);
+    public void addEpic(Long projectId, Long epicId);
 
     public List<Long> findMemoIds(Long projectId);
+    public void addMemo(Long projectId, Long memoId);
 }
