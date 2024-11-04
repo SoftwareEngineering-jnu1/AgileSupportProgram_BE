@@ -1,7 +1,7 @@
 package SEproject.repository;
 
 import SEproject.domain.Member;
-import SEproject.dto.MemberJoinDTO;
+import SEproject.dto.NewMemberDTO;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,12 +14,12 @@ class MemoryMemberRepositoryTest {
 
     @BeforeEach
     public void beforeEach() {
-        MemberJoinDTO joinDTO1 = new MemberJoinDTO();
+        NewMemberDTO joinDTO1 = new NewMemberDTO();
         joinDTO1.setEmailId("gmg010217@gmail.com");
         joinDTO1.setPassword("abcdefg");
         joinDTO1.setUsername("곽명길");
 
-        MemberJoinDTO joinDTO2 = new MemberJoinDTO();
+        NewMemberDTO joinDTO2 = new NewMemberDTO();
         joinDTO2.setEmailId("gmg01021722@gmail.com");
         joinDTO2.setPassword("abcdefg22");
         joinDTO2.setUsername("곽명길22");
@@ -41,9 +41,9 @@ class MemoryMemberRepositoryTest {
     }
 
     @Test
-    void findByEmail() {
+    void findByEmailId() {
         // when
-        Optional<Member> savedMember = memoryMemberRepository.findByEmail("gmg010217@gmail.com");
+        Optional<Member> savedMember = memoryMemberRepository.findByEmailId("gmg010217@gmail.com");
         // then
         Assertions.assertThat(savedMember.get().getEmailId()).isEqualTo("gmg010217@gmail.com");
     }

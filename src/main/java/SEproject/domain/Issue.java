@@ -9,7 +9,7 @@ import java.time.LocalDate;
 @Setter
 public class Issue {
     private Long id;
-    private String todo;
+    private String title;
     private Long epicId;
     private LocalDate startDate;
     private LocalDate endDate;

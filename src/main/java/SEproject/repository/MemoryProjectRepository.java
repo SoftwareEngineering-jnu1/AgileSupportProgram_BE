@@ -1,7 +1,5 @@
 package SEproject.repository;
 
-import SEproject.domain.Epic;
-import SEproject.domain.Member;
 import SEproject.domain.Project;
 import SEproject.dto.NewProjectDTO;
 import jakarta.annotation.PostConstruct;
@@ -19,20 +17,29 @@ public class MemoryProjectRepository implements ProjectRepository{
     public static AtomicLong sequence = new AtomicLong();
 
     @Override
-    public Project save(NewProjectDTO newProjectDTO) {
-        Project newproject = new Project();
-        newproject.setId(sequence.incrementAndGet());
-        newproject.setProjectName(newProjectDTO.getProjectName());
-        newproject.setMembersId(new ArrayList<>(newProjectDTO.getMembersId()));
-
-        store.put(newproject.getId(), newproject);
-
-        return newproject;
+    public Project findById(Long id) {
+        return store.get(id);
     }
 
     @Override
-    public Project findById(Long id) {
-        return store.get(id);
+    public List<Project> findAll() {
+        return new ArrayList<>(store.values());
+    }
+
+    @Override
+    public Project save(NewProjectDTO newProjectDTO) {
+        Project project = new Project();
+        project.setId(sequence.incrementAndGet());
+        project.setProjectName(newProjectDTO.getProjectName());
+        project.setMembersId(new ArrayList<>(newProjectDTO.getMembersId()));
+        store.put(project.getId(), project);
+
+        return project;
+    }
+
+    @Override
+    public void addEpic(Long projectId, Long epicId) {
+        store.get(projectId).getEpicsId().add(epicId);
     }
 
     @Override
@@ -43,34 +50,8 @@ public class MemoryProjectRepository implements ProjectRepository{
     }
 
     @Override
-    public List<Project> findAll() {
-        return new ArrayList<>(store.values());
-    }
-
-    @Override
     public List<Long> findMemberIds(Long projectId) {
         return store.get(projectId).getMembersId();
-    }
-
-    @Override
-    public List<Long> findEpicIds(Long projectId) {
-        return store.get(projectId).getEpicsId();
-    }
-
-    @Override
-    public void addEpic(Long projectId, Long epicId) {
-        store.get(projectId).getEpicsId().add(epicId);
-    }
-
-
-    @Override
-    public List<Long> findMemoIds(Long projectId) {
-        return store.get(projectId).getMemosId();
-    }
-
-    @Override
-    public void addMemo(Long projectId, Long memoId) {
-        store.get(projectId).getMemosId().add(memoId);
     }
 
     // 테스트용 데이터

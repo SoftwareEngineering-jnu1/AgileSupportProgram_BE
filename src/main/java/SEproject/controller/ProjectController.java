@@ -1,6 +1,5 @@
 package SEproject.controller;
 
-import SEproject.domain.Project;
 import SEproject.dto.NewProjectDTO;
 import SEproject.service.ProjectService;
 import SEproject.web.SessionConst;
@@ -13,9 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class ProjectController {
-
     private final ProjectService projectService;
-
 
     @Autowired
     public ProjectController(ProjectService projectService) {
@@ -23,7 +20,7 @@ public class ProjectController {
     }
 
     @PostMapping("SE/project/new")
-    public NewProjectDTO newProject(@RequestBody NewProjectDTO newProjectDTO, HttpServletRequest request) {
+    public NewProjectDTO createProject(@RequestBody NewProjectDTO newProjectDTO, HttpServletRequest request) {
         HttpSession session = request.getSession(false);
 
         if(session != null) {

@@ -1,7 +1,7 @@
 package SEproject.repository;
 
 import SEproject.domain.Member;
-import SEproject.dto.MemberJoinDTO;
+import SEproject.dto.NewMemberDTO;
 import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Repository;
 
@@ -17,27 +17,8 @@ public class MemoryMemberRepository implements MemberRepository {
     public static AtomicLong sequence = new AtomicLong();
 
     @Override
-    public Member save(MemberJoinDTO memberJoinDTO) {
-        Member member = new Member();
-        member.setId(sequence.incrementAndGet());
-        member.setPassword(memberJoinDTO.getPassword());
-        member.setUsername(memberJoinDTO.getUsername());
-        member.setEmailId(memberJoinDTO.getEmailId());
-        store.put(member.getId(), member);
-        return member;
-    }
-
-    @Override
     public Member findById(Long id) {
-       return store.get(id);
-    }
-
-    @Override
-    public Optional<Member> findByEmail(String email) {
-        // 아래 코드는 Optional<Member>를 리턴하므로 메서드의 리턴 타입을 Optional<Member>로 지정함
-        return findAll().stream()
-                .filter(m -> m.getEmailId().equals(email))
-                .findFirst();
+        return store.get(id);
     }
 
     @Override
@@ -45,8 +26,24 @@ public class MemoryMemberRepository implements MemberRepository {
         return new ArrayList<>(store.values());
     }
 
-    public void clearStore() {
-        store.clear();
+    @Override
+    public Member save(NewMemberDTO newMemberDTO) {
+        Member member = new Member();
+        member.setId(sequence.incrementAndGet());
+        member.setPassword(newMemberDTO.getPassword());
+        member.setUsername(newMemberDTO.getUsername());
+        member.setEmailId(newMemberDTO.getEmailId());
+        store.put(member.getId(), member);
+
+        return member;
+    }
+
+    @Override
+    public Optional<Member> findByEmailId(String emailId) {
+        // 아래 코드는 Optional<Member>를 리턴하므로 메서드의 리턴 타입을 Optional<Member>로 지정함
+        return findAll().stream()
+                .filter(m -> m.getEmailId().equals(emailId))
+                .findFirst();
     }
 
     // 테스트용 데이터

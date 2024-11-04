@@ -1,10 +1,8 @@
 package SEproject.repository;
 
-import SEproject.domain.Member;
 import SEproject.domain.Project;
 
 
-import SEproject.dto.MemberJoinDTO;
 import SEproject.dto.NewProjectDTO;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,8 +11,6 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class MemoryProjectRepositoryTest {
     MemoryProjectRepository projectRepository = new MemoryProjectRepository();

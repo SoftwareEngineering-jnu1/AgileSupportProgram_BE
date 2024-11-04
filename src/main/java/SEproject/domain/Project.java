@@ -14,5 +14,4 @@ public class Project {
     private String projectName;
     private List<Long> membersId = new ArrayList<>();
     private List<Long> epicsId = new ArrayList<>();
-    private List<Long> memosId = new ArrayList<>();
 }

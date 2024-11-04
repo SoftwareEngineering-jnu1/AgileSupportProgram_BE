@@ -1,9 +1,9 @@
 package SEproject.controller;
 
 import SEproject.domain.Member;
-import SEproject.dto.MemberJoinDTO;
-import SEproject.dto.MemberLoginDTO;
-import SEproject.service.JoinAndLoginService;
+import SEproject.dto.NewMemberDTO;
+import SEproject.dto.LoginMemberDTO;
+import SEproject.service.MemberService;
 import SEproject.web.SessionConst;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,14 +15,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-public class JoinAndLoginController {
-    private final JoinAndLoginService joinAndLoginService;
+public class MemberController {
+    private final MemberService memberService;
     private final Map<String, String> responseSuccess = new HashMap<>();
     private final Map<String, String> responseError = new HashMap<>();
 
     @Autowired
-    public JoinAndLoginController(JoinAndLoginService joinAndLoginService) {
-        this.joinAndLoginService = joinAndLoginService;
+    public MemberController(MemberService memberService) {
+        this.memberService = memberService;
     }
 
     @PostConstruct
@@ -32,8 +32,7 @@ public class JoinAndLoginController {
     }
 
     @PostMapping("SE/join")
-    public Map<String, String> join(@RequestBody MemberJoinDTO memberJoinDTO) {
-        // 사용자가 올바르게 데이터를 입력하였는지 확인 - null, "", " "은 입력할 수 없음
+    public Map<String, String> join(@RequestBody NewMemberDTO memberJoinDTO) {
         if(memberJoinDTO.getEmailId() == null || memberJoinDTO.getPassword() == null || memberJoinDTO.getUsername() == null) {
             return responseError;
         } else if(memberJoinDTO.getEmailId().equals(" ") || memberJoinDTO.getPassword().equals(" ") || memberJoinDTO.getUsername().equals(" ")) {
@@ -42,30 +41,31 @@ public class JoinAndLoginController {
             return responseError;
         }
 
-        Member createMember = joinAndLoginService.createMember(memberJoinDTO);
+        memberService.createMember(memberJoinDTO);
+
         return responseSuccess;
     }
 
     @PostMapping("SE/login")
-    public Map<String, String> login(@RequestBody MemberLoginDTO memberLoginDTO, HttpServletRequest request) {
-        if(memberLoginDTO.getEmail() == null || memberLoginDTO.getPassword() == null) {
+    public Map<String, String> login(@RequestBody LoginMemberDTO loginMemberDTO, HttpServletRequest request) {
+        if(loginMemberDTO.getEmailId() == null || loginMemberDTO.getPassword() == null) {
             return responseError;
-        } else if(memberLoginDTO.getEmail().equals(" ") || memberLoginDTO.getPassword().equals(" ")) {
+        } else if(loginMemberDTO.getEmailId().equals(" ") || loginMemberDTO.getPassword().equals(" ")) {
             return responseError;
-        } else if(memberLoginDTO.getEmail().isEmpty() || memberLoginDTO.getPassword().isEmpty()) {
+        } else if(loginMemberDTO.getEmailId().isEmpty() || loginMemberDTO.getPassword().isEmpty()) {
             return responseError;
         }
 
-        Member loginMember = joinAndLoginService.login(memberLoginDTO.getEmail(), memberLoginDTO.getPassword());
+        Member loginMember = memberService.login(loginMemberDTO);
 
-        // 로그인이 실패할 경우
+        // 로그인 실패
         if(loginMember == null) {
             return responseError;
         }
 
-        // 로그인 성공 처리, 세션이 있으면 세션을 반환하고 없으면 신규 세선 생성
+        // 로그인 성공, 세션이 있으면 세션을 반환하고 없으면 신규 세선 생성
         HttpSession session = request.getSession();
-        // 세션에 로그인 정보 보관 - 첫 번째 매개변수 : 키(문자열), 두 번째 매개변수 : 저장할 데이터 객체
+        // 첫 번째 매개변수 : 키(문자열), 두 번째 매개변수 : 저장할 데이터 객체
         session.setAttribute(SessionConst.LOGIN_MEMBER, loginMember);
 
         return responseSuccess;
