@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Optional;
 
 public interface EpicRepository {
-    public Epic save(String title, Long projectId);
+    public Epic save(NewEpicDTO newEpicDTO, Long projectId);
     public Epic findById(Long id);
     public Optional<Epic> findByTitle(String name);
     public List<Epic> findAll();

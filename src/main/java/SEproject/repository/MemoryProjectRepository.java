@@ -1,8 +1,10 @@
 package SEproject.repository;
 
 import SEproject.domain.Epic;
+import SEproject.domain.Member;
 import SEproject.domain.Project;
 import SEproject.dto.NewProjectDTO;
+import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -69,5 +71,19 @@ public class MemoryProjectRepository implements ProjectRepository{
     @Override
     public void addMemo(Long projectId, Long memoId) {
         store.get(projectId).getMemosId().add(memoId);
+    }
+
+    // 테스트용 데이터
+    @PostConstruct
+    public void init() {
+        Project newproject = new Project();
+        newproject.setId(sequence.incrementAndGet());
+        newproject.setProjectName("testProject");
+        List<Long> membersId = new ArrayList<>();
+        membersId.add(1L);
+        membersId.add(2L);
+        newproject.setMembersId(membersId);
+
+        store.put(newproject.getId(), newproject);
     }
 }

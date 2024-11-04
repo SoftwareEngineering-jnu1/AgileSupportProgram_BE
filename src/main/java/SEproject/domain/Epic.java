@@ -3,6 +3,7 @@ package SEproject.domain;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,6 +21,7 @@ public class Epic {
     private Map<Boolean, Issue> issuesComplete = new HashMap<>();
     // 에픽 완료 여부
     private Boolean isComplete = false;
-
+    private LocalDate startDate;
+    private LocalDate endDate;
     private String title;
 }

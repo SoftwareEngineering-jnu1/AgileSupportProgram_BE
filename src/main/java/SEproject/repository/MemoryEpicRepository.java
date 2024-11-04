@@ -27,11 +27,13 @@ public class MemoryEpicRepository implements EpicRepository {
     }
 
     @Override
-    public Epic save(String title, Long projectId) {
+    public Epic save(NewEpicDTO newEpicDTO, Long projectId) {
         Epic savedepic = new Epic();
         savedepic.setId(sequence.incrementAndGet());
         savedepic.setProjectId(projectId);
-        savedepic.setTitle(title);
+        savedepic.setTitle(newEpicDTO.getTitle());
+        savedepic.setStartDate(newEpicDTO.getStartDate());
+        savedepic.setEndDate(newEpicDTO.getEndDate());
         memoryProjectRepository.addEpic(projectId, savedepic.getId());
         store.put(savedepic.getId(), savedepic);
 
