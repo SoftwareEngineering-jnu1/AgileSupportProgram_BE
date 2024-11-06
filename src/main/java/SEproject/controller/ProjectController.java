@@ -1,5 +1,6 @@
 package SEproject.controller;
 
+import SEproject.domain.Project;
 import SEproject.dto.NewProjectDTO;
 import SEproject.service.ProjectService;
 import SEproject.web.SessionConst;
@@ -20,7 +21,7 @@ public class ProjectController {
     }
 
     @PostMapping("SE/project/new")
-    public NewProjectDTO createProject(@RequestBody NewProjectDTO newProjectDTO, HttpServletRequest request) {
+    public Project createProject(@RequestBody NewProjectDTO newProjectDTO, HttpServletRequest request) {
         HttpSession session = request.getSession(false);
 
         if(session != null) {
@@ -30,8 +31,6 @@ public class ProjectController {
             }
         }
 
-        projectService.createProject(newProjectDTO);
-
-        return newProjectDTO;
+        return projectService.createProject(newProjectDTO);
     }
 }

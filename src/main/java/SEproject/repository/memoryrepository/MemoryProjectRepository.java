@@ -1,18 +1,18 @@
-package SEproject.repository;
+package SEproject.repository.memoryrepository;
 
 import SEproject.domain.Project;
 import SEproject.dto.NewProjectDTO;
+import SEproject.repository.ProjectRepository;
 import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Repository
-public class MemoryProjectRepository implements ProjectRepository{
+public class MemoryProjectRepository implements ProjectRepository {
     public static ConcurrentHashMap<Long, Project> store = new ConcurrentHashMap<>();
     public static AtomicLong sequence = new AtomicLong();
 
@@ -40,18 +40,6 @@ public class MemoryProjectRepository implements ProjectRepository{
     @Override
     public void addEpic(Long projectId, Long epicId) {
         store.get(projectId).getEpicsId().add(epicId);
-    }
-
-    @Override
-    public Optional<Project> findByName(String name) {
-        return findAll().stream()
-                .filter(m -> m.getProjectName().equals(name))
-                .findFirst();
-    }
-
-    @Override
-    public List<Long> findMemberIds(Long projectId) {
-        return store.get(projectId).getMembersId();
     }
 
     // 테스트용 데이터

@@ -1,7 +1,8 @@
-package SEproject.repository;
+package SEproject.repository.memoryrepository;
 
 import SEproject.domain.Epic;
 import SEproject.dto.NewEpicDTO;
+import SEproject.repository.EpicRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 

@@ -11,4 +11,5 @@ public interface MemberRepository {
     public List<Member> findAll();
     public Member save(NewMemberDTO newMemberDTO);
     public Optional<Member> findByEmailId(String emailId);
+    public Optional<Member> findByUsername(String username);
 }

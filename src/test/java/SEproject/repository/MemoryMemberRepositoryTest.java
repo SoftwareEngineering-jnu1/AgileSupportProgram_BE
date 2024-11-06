@@ -2,6 +2,7 @@ package SEproject.repository;
 
 import SEproject.domain.Member;
 import SEproject.dto.NewMemberDTO;
+import SEproject.repository.memoryrepository.MemoryMemberRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

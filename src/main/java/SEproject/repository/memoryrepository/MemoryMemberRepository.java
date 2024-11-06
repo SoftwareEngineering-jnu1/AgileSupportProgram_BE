@@ -1,7 +1,8 @@
-package SEproject.repository;
+package SEproject.repository.memoryrepository;
 
 import SEproject.domain.Member;
 import SEproject.dto.NewMemberDTO;
+import SEproject.repository.MemberRepository;
 import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Repository;
 
@@ -43,6 +44,13 @@ public class MemoryMemberRepository implements MemberRepository {
         // 아래 코드는 Optional<Member>를 리턴하므로 메서드의 리턴 타입을 Optional<Member>로 지정함
         return findAll().stream()
                 .filter(m -> m.getEmailId().equals(emailId))
+                .findFirst();
+    }
+
+    @Override
+    public Optional<Member> findByUsername(String username) {
+        return findAll().stream()
+                .filter(m -> m.getUsername().equals(username))
                 .findFirst();
     }
 
