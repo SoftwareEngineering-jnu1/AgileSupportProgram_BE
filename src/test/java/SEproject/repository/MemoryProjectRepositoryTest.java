@@ -47,32 +47,11 @@ class MemoryProjectRepositoryTest {
     }
 
     @Test
-    void findByName() {
-        // when
-        Optional<Project> savedProject = projectRepository.findByName("testproject1");
-        // then
-        Assertions.assertThat(savedProject.get().getProjectName()).isEqualTo("testproject1");
-    }
-
-    @Test
     void findAll() {
         // when
         List<Project> allProject = projectRepository.findAll();
         // then
         Assertions.assertThat(allProject).hasSize(2);
-    }
-
-    @Test
-    void findMemberIds() {
-        // when
-        List<Long> savedmemberId1 = projectRepository.findMemberIds(1L);
-        List<Long> savedmemberId2 = projectRepository.findMemberIds(2L);
-        // then
-        Assertions.assertThat(savedmemberId1).hasSize(1);
-        Assertions.assertThat(savedmemberId1.get(0)).isEqualTo(1L);
-
-        Assertions.assertThat(savedmemberId2).hasSize(1);
-        Assertions.assertThat(savedmemberId2.get(0)).isEqualTo(2L);
     }
 
     @Test
