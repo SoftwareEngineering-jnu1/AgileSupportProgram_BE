@@ -10,5 +10,5 @@ import java.util.List;
 @Setter
 public class NewProjectDTO {
     private String projectName;
-    private List<Long> membersId = new ArrayList<>();
+    private List<String> membersEmailId = new ArrayList<>();
 }

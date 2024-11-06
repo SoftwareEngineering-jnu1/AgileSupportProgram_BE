@@ -13,4 +13,5 @@ public class Epic {
     private String title;
     private LocalDate startDate;
     private LocalDate endDate;
+    private Boolean isCompleted = false;
 }

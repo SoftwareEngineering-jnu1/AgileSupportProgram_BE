@@ -4,6 +4,7 @@ import SEproject.domain.Project;
 import SEproject.dto.NewProjectDTO;
 import SEproject.repository.ProjectRepository;
 import jakarta.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -15,6 +16,12 @@ import java.util.concurrent.atomic.AtomicLong;
 public class MemoryProjectRepository implements ProjectRepository {
     public static ConcurrentHashMap<Long, Project> store = new ConcurrentHashMap<>();
     public static AtomicLong sequence = new AtomicLong();
+    public final MemoryMemberRepository memoryMemberRepository;
+
+    @Autowired
+    public MemoryProjectRepository(MemoryMemberRepository memoryMemberRepository) {
+        this.memoryMemberRepository = memoryMemberRepository;
+    }
 
     @Override
     public Project findById(Long id) {
@@ -31,7 +38,14 @@ public class MemoryProjectRepository implements ProjectRepository {
         Project project = new Project();
         project.setId(sequence.incrementAndGet());
         project.setProjectName(newProjectDTO.getProjectName());
-        project.setMembersId(new ArrayList<>(newProjectDTO.getMembersId()));
+        List<Long> memberIds = new ArrayList<>();
+        List<String> membersEmailId = newProjectDTO.getMembersEmailId();
+        for(int i = 0; i < membersEmailId.size(); i++) {
+            memberIds.add(memoryMemberRepository.findByEmailId(membersEmailId.get(i)).get().getId());
+            Long memberid = memoryMemberRepository.findByEmailId(membersEmailId.get(i)).get().getId();
+            memoryMemberRepository.findById(memberid).getProjectIds().add(project.getId());
+        }
+        project.setMembersId(memberIds);
         store.put(project.getId(), project);
 
         return project;

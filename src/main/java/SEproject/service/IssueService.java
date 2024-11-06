@@ -2,20 +2,20 @@ package SEproject.service;
 
 import SEproject.domain.Issue;
 import SEproject.dto.NewIssueDTO;
-import SEproject.repository.memoryrepository.MemoryIssueRepository;
+import SEproject.repository.IssueRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class IssueService {
-    private final MemoryIssueRepository memoryIssueRepository;
+    private final IssueRepository issueRepository;
 
     @Autowired
-    public IssueService(MemoryIssueRepository memoryIssueRepository) {
-        this.memoryIssueRepository = memoryIssueRepository;
+    public IssueService(IssueRepository issueRepository) {
+        this.issueRepository = issueRepository;
     }
 
     public Issue createIssue(NewIssueDTO newIssueDTO, Long epicId) {
-        return memoryIssueRepository.save(newIssueDTO, epicId);
+        return issueRepository.save(newIssueDTO, epicId);
     }
 }

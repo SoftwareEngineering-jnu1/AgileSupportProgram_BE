@@ -81,4 +81,18 @@ public class MemberController {
 
         return responseSuccess;
     }
+
+    @PostMapping("SE/projects/{memberId}")
+    public Map<String, Map<String, Long>> projectList(@PathVariable("memberId") Long memberId, HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+
+        if(session != null) {
+            Object loginMember = session.getAttribute(SessionConst.LOGIN_MEMBER);
+            if(loginMember == null) {
+                return null;
+            }
+        }
+
+        return memberService.projectList(memberId);
+    }
 }
