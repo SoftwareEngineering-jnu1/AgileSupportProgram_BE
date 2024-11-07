@@ -15,4 +15,5 @@ public class Issue {
     private LocalDate endDate;
     private String mainMemberName;
     private String progressStatus;
+    private Boolean iscompleted = false;
 }
