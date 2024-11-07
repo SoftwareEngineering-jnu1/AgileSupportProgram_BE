@@ -9,4 +9,5 @@ public interface IssueRepository {
     public Issue findById(Long id);
     public List<Issue> findAll();
     public Issue save(NewIssueDTO newIssueDTO, Long epicId);
+    public Issue edit(NewIssueDTO newIssueDTO, Long issueId);
 }

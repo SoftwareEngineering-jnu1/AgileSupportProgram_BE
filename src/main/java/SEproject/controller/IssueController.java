@@ -22,7 +22,7 @@ public class IssueController {
     }
 
     @PostMapping("SE/project/{projectId}/{epicId}/addissue")
-    public Issue createIssue(@RequestBody NewIssueDTO newIssueDTO, @PathVariable Long projectId, @PathVariable Long epicId, HttpServletRequest request) {
+    public Issue createIssue(@RequestBody NewIssueDTO newIssueDTO, @PathVariable Long epicId, HttpServletRequest request) {
         HttpSession session = request.getSession(false);
 
         if(session != null) {
@@ -34,4 +34,19 @@ public class IssueController {
 
         return issueService.createIssue(newIssueDTO, epicId);
     }
+
+    @PostMapping("SE/project/{projectId}/{epicId}/{issue}/edit")
+    public Issue correctionIssue(@RequestBody NewIssueDTO newIssueDTO, @PathVariable Long issue, HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+
+        if(session != null) {
+            Object loginMember = session.getAttribute(SessionConst.LOGIN_MEMBER);
+            if(loginMember == null) {
+                return null;
+            }
+        }
+
+        return issueService.correctionIssue(newIssueDTO, issue);
+    }
+
 }

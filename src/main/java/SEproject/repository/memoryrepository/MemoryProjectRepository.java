@@ -64,7 +64,6 @@ public class MemoryProjectRepository implements ProjectRepository {
         newproject.setProjectName("testProject");
         List<Long> membersId = new ArrayList<>();
         membersId.add(1L);
-        membersId.add(2L);
         newproject.setMembersId(membersId);
 
         store.put(newproject.getId(), newproject);

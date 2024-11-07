@@ -2,7 +2,9 @@ package SEproject.repository.memoryrepository;
 
 import SEproject.domain.Issue;
 import SEproject.dto.NewIssueDTO;
+import SEproject.repository.EpicRepository;
 import SEproject.repository.IssueRepository;
+import SEproject.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -15,11 +17,13 @@ import java.util.concurrent.atomic.AtomicLong;
 public class MemoryIssueRepository implements IssueRepository {
     public static ConcurrentHashMap<Long, Issue> store = new ConcurrentHashMap<>();
     public static AtomicLong sequence = new AtomicLong();
-    public MemoryMemberRepository memberRepository;
+    public final MemberRepository memberRepository;
+    public final EpicRepository epicRepository;
 
     @Autowired
-    public MemoryIssueRepository(MemoryMemberRepository memberRepository) {
+    public MemoryIssueRepository(MemberRepository memberRepository, EpicRepository epicRepository) {
         this.memberRepository = memberRepository;
+        this.epicRepository = epicRepository;
     }
 
     @Override
@@ -46,9 +50,26 @@ public class MemoryIssueRepository implements IssueRepository {
             issue.setMainMemberName(null);
         }
         issue.setProgressStatus(newIssueDTO.getProgressStatus());
+        epicRepository.findById(epicId).getIssueIds().add(issue.getId());
 
         store.put(issue.getId(), issue);
 
         return issue;
+    }
+
+    @Override
+    public Issue edit(NewIssueDTO newIssueDTO, Long issueId) {
+        Issue editIssue = store.get(issueId);
+        editIssue.setTitle(newIssueDTO.getTitle());
+        editIssue.setStartDate(newIssueDTO.getStartDate());
+        editIssue.setEndDate(newIssueDTO.getEndDate());
+        editIssue.setProgressStatus(newIssueDTO.getProgressStatus());
+        if(memberRepository.findByUsername(newIssueDTO.getMainMemberName()).isPresent()) {
+            editIssue.setMainMemberName(newIssueDTO.getMainMemberName());
+        } else {
+            editIssue.setMainMemberName(null);
+        }
+
+        return editIssue;
     }
 }

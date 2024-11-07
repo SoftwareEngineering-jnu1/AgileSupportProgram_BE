@@ -18,4 +18,8 @@ public class IssueService {
     public Issue createIssue(NewIssueDTO newIssueDTO, Long epicId) {
         return issueRepository.save(newIssueDTO, epicId);
     }
+
+    public Issue correctionIssue(NewIssueDTO newIssueDTO, Long issueId) {
+        return issueRepository.edit(newIssueDTO, issueId);
+    }
 }
