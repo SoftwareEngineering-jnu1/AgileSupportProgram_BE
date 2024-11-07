@@ -6,10 +6,12 @@ import SEproject.repository.EpicRepository;
 import SEproject.repository.IssueRepository;
 import SEproject.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -21,7 +23,7 @@ public class MemoryIssueRepository implements IssueRepository {
     public final EpicRepository epicRepository;
 
     @Autowired
-    public MemoryIssueRepository(MemberRepository memberRepository, EpicRepository epicRepository) {
+    public MemoryIssueRepository(MemberRepository memberRepository, @Lazy EpicRepository epicRepository) {
         this.memberRepository = memberRepository;
         this.epicRepository = epicRepository;
     }
@@ -74,5 +76,12 @@ public class MemoryIssueRepository implements IssueRepository {
         }
 
         return editIssue;
+    }
+
+    @Override
+    public Optional<Issue> findByTitle(String title) {
+        return findAll().stream()
+                .filter(m -> m.getTitle().equals(title))
+                .findFirst();
     }
 }

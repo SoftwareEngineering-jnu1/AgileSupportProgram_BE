@@ -82,7 +82,7 @@ public class MemberController {
         return responseSuccess;
     }
 
-    @PostMapping("SE/projects/{memberId}")
+    @GetMapping("SE/projects/{memberId}")
     public Map<String, Map<String, Long>> projectList(@PathVariable("memberId") Long memberId, HttpServletRequest request) {
         HttpSession session = request.getSession(false);
 

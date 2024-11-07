@@ -1,12 +1,15 @@
 package SEproject.service;
 
 import SEproject.domain.Epic;
+import SEproject.dto.EditEpicDTO;
 import SEproject.dto.NewEpicDTO;
 import SEproject.repository.EpicRepository;
 import SEproject.repository.IssueRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,5 +46,32 @@ public class EpicService {
         result.put("completedIssues", completedIssues);
 
         return result;
+    }
+
+    public EditEpicDTO correctionEpic(EditEpicDTO editEpicDTO, Long epicId) {
+        return epicRepository.edit(editEpicDTO, epicId);
+    }
+
+    public EditEpicDTO checkEpic(Long epicId) {
+        EditEpicDTO editEpicDTO = new EditEpicDTO();
+        Epic epic = epicRepository.findById(epicId);
+
+        editEpicDTO.setStartDate(epic.getStartDate());
+        editEpicDTO.setEndDate(epic.getEndDate());
+        editEpicDTO.setTitle(epic.getTitle());
+
+        List<Long> issueIds = epic.getIssueIds();
+        List<String> issueTitles = new ArrayList<>();
+        for(int i = 0; i < issueIds.size(); i++) {
+            issueTitles.add(issueRepository.findById(issueIds.get(i)).getTitle());
+        }
+        editEpicDTO.getSubIssueTitle().addAll(issueTitles);
+
+        for(int i = 0; i < epic.getDependency().size(); i++) {
+            editEpicDTO.getDependency().put(Long.valueOf(i), issueRepository.findById(epic.getDependency().get(Long.valueOf(i))).getTitle());
+        }
+        editEpicDTO.setEpicProgressStatus(this.epicProgressStatus(epicId));
+
+        return editEpicDTO;
     }
 }

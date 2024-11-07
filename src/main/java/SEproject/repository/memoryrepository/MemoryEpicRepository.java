@@ -1,8 +1,10 @@
 package SEproject.repository.memoryrepository;
 
 import SEproject.domain.Epic;
+import SEproject.dto.EditEpicDTO;
 import SEproject.dto.NewEpicDTO;
 import SEproject.repository.EpicRepository;
+import SEproject.repository.IssueRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -17,10 +19,12 @@ public class MemoryEpicRepository implements EpicRepository {
     public static AtomicLong sequence = new AtomicLong();
 
     public final MemoryProjectRepository memoryProjectRepository;
+    public final IssueRepository issueRepository;
 
     @Autowired
-    public MemoryEpicRepository(MemoryProjectRepository memoryProjectRepository) {
+    public MemoryEpicRepository(MemoryProjectRepository memoryProjectRepository, IssueRepository issueRepository) {
         this.memoryProjectRepository = memoryProjectRepository;
+        this.issueRepository = issueRepository;
     }
 
     @Override
@@ -45,5 +49,19 @@ public class MemoryEpicRepository implements EpicRepository {
         store.put(epic.getId(), epic);
 
         return epic;
+    }
+
+    @Override
+    public EditEpicDTO edit(EditEpicDTO editEpicDTO, Long epicId) {
+        Epic editEpic = store.get(epicId);
+        editEpic.setStartDate(editEpic.getStartDate());
+        editEpic.setEndDate(editEpic.getEndDate());
+        editEpic.setTitle(editEpic.getTitle());
+        for(int i = 0; i < editEpicDTO.getDependency().size(); i++) {
+            Long dependencyIssueId = issueRepository.findByTitle(editEpicDTO.getDependency().get(i)).get().getId();
+            editEpic.getDependency().put(Long.valueOf(i), dependencyIssueId);
+        }
+
+        return editEpicDTO;
     }
 }
