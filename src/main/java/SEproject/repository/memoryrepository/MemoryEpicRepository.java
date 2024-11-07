@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -63,5 +64,12 @@ public class MemoryEpicRepository implements EpicRepository {
         }
 
         return editEpicDTO;
+    }
+
+    @Override
+    public Optional<Epic> findByTitle(String title) {
+        return findAll().stream()
+                .filter(m -> m.getTitle().equals(title))
+                .findFirst();
     }
 }

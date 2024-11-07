@@ -2,14 +2,16 @@ package SEproject.controller;
 
 import SEproject.domain.Project;
 import SEproject.dto.NewProjectDTO;
+import SEproject.dto.TimelineEpicDTO;
 import SEproject.service.ProjectService;
 import SEproject.web.SessionConst;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Map;
 
 @RestController
 public class ProjectController {
@@ -32,5 +34,19 @@ public class ProjectController {
         }
 
         return projectService.createProject(newProjectDTO);
+    }
+
+    @GetMapping("SE/project/{projectId}/timeline")
+    public Map<String, List<TimelineEpicDTO>> getTimeline(@PathVariable Long projectId, HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+
+        if(session != null) {
+            Object loginMember = session.getAttribute(SessionConst.LOGIN_MEMBER);
+            if(loginMember == null) {
+                return null;
+            }
+        }
+
+        return projectService.getTimeline(projectId);
     }
 }
