@@ -49,4 +49,18 @@ public class ProjectController {
 
         return projectService.getTimeline(projectId);
     }
+
+    @GetMapping("SE/project/{projectId}/kanbanboard/newsprint")
+    public List<String> getEpics(@PathVariable Long projectId, HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+
+        if(session != null) {
+            Object loginMember = session.getAttribute(SessionConst.LOGIN_MEMBER);
+            if(loginMember == null) {
+                return null;
+            }
+        }
+
+        return projectService.getEpics(projectId);
+    }
 }

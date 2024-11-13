@@ -9,8 +9,10 @@ import SEproject.dto.TimelineIssueDTO;
 import SEproject.repository.EpicRepository;
 import SEproject.repository.IssueRepository;
 import SEproject.repository.ProjectRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -72,5 +74,17 @@ public class ProjectService {
         totalResult.put(projectName, result);
 
         return totalResult;
+    }
+
+    public List<String> getEpics(Long projectId) {
+        Project project = projectRepository.findById(projectId);
+        List<Long> epicsId = project.getEpicsId();
+
+        List<String> result = new ArrayList<>();
+        for(int i = 0; i < epicsId.size(); i++) {
+            result.add(epicRepository.findById(epicsId.get(i)).getTitle());
+        }
+
+        return result;
     }
 }

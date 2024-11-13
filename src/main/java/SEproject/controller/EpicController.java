@@ -4,12 +4,15 @@ import SEproject.domain.Epic;
 import SEproject.domain.Issue;
 import SEproject.dto.EditEpicDTO;
 import SEproject.dto.NewEpicDTO;
+import SEproject.dto.NewSprintDTO;
 import SEproject.service.EpicService;
 import SEproject.web.SessionConst;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 public class EpicController {
@@ -60,5 +63,23 @@ public class EpicController {
         }
 
         return epicService.checkEpic(epicId);
+    }
+
+    @PostMapping("SE/project/{projectId}/kanbanboard/newsprint")
+    public String settingSprint(@RequestBody NewSprintDTO newSprintDTO, HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+
+        if(session != null) {
+            Object loginMember = session.getAttribute(SessionConst.LOGIN_MEMBER);
+            if(loginMember == null) {
+                return null;
+            }
+        }
+
+        if(epicService.settingSprint(newSprintDTO) != null) {
+            return "success";
+        } else {
+            return "fail";
+        }
     }
 }

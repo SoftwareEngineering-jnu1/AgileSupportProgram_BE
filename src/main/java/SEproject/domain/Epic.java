@@ -20,4 +20,5 @@ public class Epic {
     private Boolean isCompleted = false;
     private List<Long> issueIds = new ArrayList<>();
     private Map<Long, Long> dependency = new HashMap<>();
+    private String sprintName;
 }

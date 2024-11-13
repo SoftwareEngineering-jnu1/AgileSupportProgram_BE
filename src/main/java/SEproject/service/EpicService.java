@@ -3,11 +3,18 @@ package SEproject.service;
 import SEproject.domain.Epic;
 import SEproject.dto.EditEpicDTO;
 import SEproject.dto.NewEpicDTO;
+import SEproject.dto.NewSprintDTO;
 import SEproject.repository.EpicRepository;
 import SEproject.repository.IssueRepository;
+import SEproject.web.SessionConst;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -73,5 +80,10 @@ public class EpicService {
         editEpicDTO.setEpicProgressStatus(this.epicProgressStatus(epicId));
 
         return editEpicDTO;
+    }
+
+    public String settingSprint(NewSprintDTO newSprintDTO) {
+        epicRepository.findByTitle(newSprintDTO.getEpicTitle()).get().setSprintName(newSprintDTO.getSprintName());
+        return "success";
     }
 }
