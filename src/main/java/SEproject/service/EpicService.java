@@ -1,10 +1,12 @@
 package SEproject.service;
 
 import SEproject.domain.Epic;
+import SEproject.domain.SprintRetrospective;
 import SEproject.dto.*;
 import SEproject.repository.EpicRepository;
 import SEproject.repository.IssueRepository;
 import SEproject.repository.ProjectRepository;
+import SEproject.repository.SprintRetrospectiveRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,14 +19,16 @@ public class EpicService {
     private final EpicRepository epicRepository;
     private final IssueRepository issueRepository;
     private final ProjectRepository projectRepository;
+    private final SprintRetrospectiveRepository sprintRetrospectiveRepository;
 
     private final Map<String, String> memberColorMap = new HashMap<>();
 
     @Autowired
-    public EpicService(EpicRepository epicRepository, IssueRepository issueRepository, ProjectRepository projectRepository) {
+    public EpicService(EpicRepository epicRepository, IssueRepository issueRepository, ProjectRepository projectRepository, SprintRetrospectiveRepository sprintRetrospectiveRepository) {
         this.epicRepository = epicRepository;
         this.issueRepository = issueRepository;
         this.projectRepository = projectRepository;
+        this.sprintRetrospectiveRepository = sprintRetrospectiveRepository;
     }
 
     public Epic createEpic(NewEpicDTO newEpicDTO, Long projectId) {
@@ -77,9 +81,19 @@ public class EpicService {
         return editEpicDTO;
     }
 
-    public String settingSprint(NewSprintDTO newSprintDTO) {
+    public String settingSprint(NewSprintDTO newSprintDTO, Long projectId) {
         epicRepository.findByTitle(newSprintDTO.getEpicTitle()).get().setSprintName(newSprintDTO.getSprintName());
-        return epicRepository.findByTitle(newSprintDTO.getEpicTitle()).get().getId().toString();
+        Long epicId = epicRepository.findByTitle(newSprintDTO.getEpicTitle()).get().getId();
+        // 스프린트 회고 제작
+        SprintRetrospective sprintRetrospective = new SprintRetrospective();
+        sprintRetrospective.setEpicId(epicId);
+        sprintRetrospective.setSprintName(newSprintDTO.getSprintName());
+
+        List<Long> membersId = projectRepository.findById(projectId).getMembersId();
+        sprintRetrospective.setMemberIds(membersId);
+        sprintRetrospective.setTotalMemberCount(Long.valueOf(membersId.size()));
+
+        return epicId.toString();
     }
 
     public KanbanboardDTO getKanbanboard(Long projectId, Long epicId) {

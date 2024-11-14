@@ -64,7 +64,7 @@ public class EpicController {
     }
 
     @PostMapping("SE/project/{projectId}/kanbanboard/newsprint")
-    public Map<String, String> settingSprint(@RequestBody NewSprintDTO newSprintDTO, HttpServletRequest request) {
+    public Map<String, String> settingSprint(@RequestBody NewSprintDTO newSprintDTO, @PathVariable Long projectId,HttpServletRequest request) {
         HttpSession session = request.getSession(false);
 
         if(session != null) {
@@ -76,8 +76,8 @@ public class EpicController {
 
         Map<String, String> result = new HashMap<>();
 
-        if(epicService.settingSprint(newSprintDTO) != null) {
-            result.put("epicId", epicService.settingSprint(newSprintDTO));
+        if(epicService.settingSprint(newSprintDTO, projectId) != null) {
+            result.put("epicId", epicService.settingSprint(newSprintDTO, projectId));
             return result;
         } else {
             result.put("epicId", null);
