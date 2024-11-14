@@ -1,10 +1,7 @@
 package SEproject.controller;
 
 import SEproject.domain.Member;
-import SEproject.dto.EditMemberDTO;
-import SEproject.dto.GetMyPage;
-import SEproject.dto.NewMemberDTO;
-import SEproject.dto.LoginMemberDTO;
+import SEproject.dto.*;
 import SEproject.service.MemberService;
 import SEproject.web.SessionConst;
 import jakarta.annotation.PostConstruct;
@@ -138,5 +135,19 @@ public class MemberController {
         }
 
         return memberService.getMember(memberId);
+    }
+
+    @GetMapping("SE/members/{memberId}/{epicId}")
+    public GetSprintRetrospective getsprintRetrospective(@PathVariable Long memberId, @PathVariable Long epicId, HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+
+        if(session != null) {
+            Object loginMember = session.getAttribute(SessionConst.LOGIN_MEMBER);
+            if(loginMember == null) {
+                return null;
+            }
+        }
+
+        return memberService.getsprintRetrospective(memberId, epicId);
     }
 }

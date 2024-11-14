@@ -3,10 +3,8 @@ package SEproject.service;
 import SEproject.domain.Epic;
 import SEproject.domain.Member;
 import SEproject.domain.Project;
-import SEproject.dto.EditMemberDTO;
-import SEproject.dto.GetMyPage;
-import SEproject.dto.LoginMemberDTO;
-import SEproject.dto.NewMemberDTO;
+import SEproject.domain.SprintRetrospective;
+import SEproject.dto.*;
 import SEproject.repository.EpicRepository;
 import SEproject.repository.MemberRepository;
 import SEproject.repository.ProjectRepository;
@@ -107,5 +105,17 @@ public class MemberService {
 
     public Member getMember(Long memberId) {
         return memberRepository.findById(memberId);
+    }
+
+    public GetSprintRetrospective getsprintRetrospective(Long memberId, Long epicId) {
+        Member member = memberRepository.findById(memberId);
+        SprintRetrospective sprintRetrospective = member.getSprintRetrospectives().get(epicId);
+
+        GetSprintRetrospective getSprintRetrospective = new GetSprintRetrospective();
+        getSprintRetrospective.setContinue(sprintRetrospective.getContinue());
+        getSprintRetrospective.setStop(sprintRetrospective.getStop());
+        getSprintRetrospective.setStart(sprintRetrospective.getStart());
+
+        return getSprintRetrospective;
     }
 }

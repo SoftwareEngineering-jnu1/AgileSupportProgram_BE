@@ -4,7 +4,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Getter @Setter
 public class Member {
@@ -16,5 +18,5 @@ public class Member {
     private String position;
     private String companyOrSchool;
     private String contactInfo;
-    private List<SprintRetrospective> sprintRetrospectives = new ArrayList<>();
+    private Map<Long, SprintRetrospective> sprintRetrospectives = new HashMap<>();
 }

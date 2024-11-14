@@ -55,17 +55,4 @@ public class MemoryProjectRepository implements ProjectRepository {
     public void addEpic(Long projectId, Long epicId) {
         store.get(projectId).getEpicsId().add(epicId);
     }
-
-    // 테스트용 데이터
-    @PostConstruct
-    public void init() {
-        Project newproject = new Project();
-        newproject.setId(sequence.incrementAndGet());
-        newproject.setProjectName("testProject");
-        List<Long> membersId = new ArrayList<>();
-        membersId.add(1L);
-        newproject.setMembersId(membersId);
-
-        store.put(newproject.getId(), newproject);
-    }
 }

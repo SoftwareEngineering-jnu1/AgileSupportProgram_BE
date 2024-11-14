@@ -136,10 +136,16 @@ public class EpicService {
         return String.format("#%02X%02X%02X", red, green, blue);
     }
 
-    public KanbanboardEditIssueDTO editKanbanboard(Long issueId, String progressStatus) {
+    public KanbanboardEditIssueDTO editKanbanboard(Long epicId, Long issueId, String progressStatus) {
         if(progressStatus.equals("Done")) {
             issueRepository.findById(issueId).setProgressStatus(progressStatus);
             issueRepository.findById(issueId).setIscompleted(true);
+
+            Epic epic = epicRepository.findById(epicId);
+            Map<String, Long> epicProgressStatus = epicProgressStatus(epicId);
+            if(epicProgressStatus.get("totalIssues").equals(epicProgressStatus.get("totalIssues"))) {
+                epic.setIsCompleted(true);
+            }
         } else {
             issueRepository.findById(issueId).setProgressStatus(progressStatus);
             issueRepository.findById(issueId).setIscompleted(false);
@@ -170,7 +176,7 @@ public class EpicService {
             List<Long> membersId = projectRepository.findById(projectId).getMembersId();
             for(Long memberId : membersId) {
                 Member member = memberRepository.findById(memberId);
-                member.getSprintRetrospectives().add(submit);
+                member.getSprintRetrospectives().put(epicId, submit);
             }
         }
 

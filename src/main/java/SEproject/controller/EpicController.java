@@ -100,7 +100,7 @@ public class EpicController {
     }
 
     @PostMapping("SE/project/{projectId}/kanbanboard/{epicId}/{issueId}")
-    public KanbanboardEditIssueDTO editKanbanboard(@RequestBody KanbanboardEditIssueDTO kanbanboardEditIssueDTO, @PathVariable Long issueId, HttpServletRequest request) {
+    public KanbanboardEditIssueDTO editKanbanboard(@RequestBody KanbanboardEditIssueDTO kanbanboardEditIssueDTO, @PathVariable Long epicId ,@PathVariable Long issueId, HttpServletRequest request) {
         HttpSession session = request.getSession(false);
 
         if(session != null) {
@@ -110,7 +110,7 @@ public class EpicController {
             }
         }
 
-        return epicService.editKanbanboard(issueId, kanbanboardEditIssueDTO.getProgressStatus());
+        return epicService.editKanbanboard(epicId, issueId, kanbanboardEditIssueDTO.getProgressStatus());
     }
 
     @PostMapping("SE/project/{projectId}/kanbanboard/{epicId}/review")
