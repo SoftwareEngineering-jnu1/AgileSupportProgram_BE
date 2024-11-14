@@ -38,4 +38,15 @@ public class MemorySprintRetrospective implements SprintRetrospectiveRepository 
 
         return savedSprintRetrospective;
     }
+
+    @Override
+    public SprintRetrospective findByEpicId(Long epicId) {
+        for (SprintRetrospective sprintRetrospective : store.values()) {
+            if (sprintRetrospective.getEpicId().equals(epicId)) {
+                return sprintRetrospective;
+            }
+        }
+
+        return null;
+    }
 }

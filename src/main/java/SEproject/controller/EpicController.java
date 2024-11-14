@@ -112,4 +112,18 @@ public class EpicController {
 
         return epicService.editKanbanboard(issueId, kanbanboardEditIssueDTO.getProgressStatus());
     }
+
+    @PostMapping("SE/project/{projectId}/kanbanboard/{epicId}/review")
+    public String submitRetrospective(@RequestBody SubmitRetrospectiveDTO submitRetrospectiveDTO, @PathVariable Long projectId, @PathVariable Long epicId, HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+
+        if(session != null) {
+            Object loginMember = session.getAttribute(SessionConst.LOGIN_MEMBER);
+            if(loginMember == null) {
+                return null;
+            }
+        }
+
+        return epicService.submitRetrospective(submitRetrospectiveDTO, projectId, epicId);
+    }
 }

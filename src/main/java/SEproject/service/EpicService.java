@@ -10,7 +10,6 @@ import SEproject.repository.SprintRetrospectiveRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.awt.*;
 import java.util.*;
 import java.util.List;
 
@@ -92,6 +91,7 @@ public class EpicService {
         List<Long> membersId = projectRepository.findById(projectId).getMembersId();
         sprintRetrospective.setMemberIds(membersId);
         sprintRetrospective.setTotalMemberCount(Long.valueOf(membersId.size()));
+        sprintRetrospectiveRepository.save(sprintRetrospective);
 
         return epicId.toString();
     }
@@ -150,5 +150,22 @@ public class EpicService {
         editIssueDTO.setProgressStatus(progressStatus);
 
         return editIssueDTO;
+    }
+
+    public String submitRetrospective(SubmitRetrospectiveDTO submitRetrospectiveDTO, Long projectId, Long epicId) {
+        SprintRetrospective submit = sprintRetrospectiveRepository.findByEpicId(epicId);
+
+        if(submit == null) {
+            return "failed";
+        }
+
+        submit.getStop().add(submitRetrospectiveDTO.getStop());
+        submit.getStart().add(submitRetrospectiveDTO.getStart());
+        submit.getContinue().add(submitRetrospectiveDTO.getContinue());
+
+        Long completeMemberCount = submit.getCompleteMemberCount();
+        submit.setCompleteMemberCount(completeMemberCount + 1);
+
+        return "success";
     }
 }
