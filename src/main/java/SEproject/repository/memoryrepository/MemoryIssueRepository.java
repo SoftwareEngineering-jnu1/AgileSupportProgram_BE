@@ -71,8 +71,11 @@ public class MemoryIssueRepository implements IssueRepository {
         } else {
             editIssue.setMainMemberName(null);
         }
+
         if(editIssue.getProgressStatus().equals("Done")) {
             editIssue.setIscompleted(true);
+        } else {
+            editIssue.setIscompleted(false);
         }
 
         return editIssue;

@@ -1,35 +1,30 @@
 package SEproject.service;
 
 import SEproject.domain.Epic;
-import SEproject.dto.EditEpicDTO;
-import SEproject.dto.NewEpicDTO;
-import SEproject.dto.NewSprintDTO;
+import SEproject.dto.*;
 import SEproject.repository.EpicRepository;
 import SEproject.repository.IssueRepository;
-import SEproject.web.SessionConst;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
+import SEproject.repository.ProjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.awt.*;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class EpicService {
     private final EpicRepository epicRepository;
     private final IssueRepository issueRepository;
+    private final ProjectRepository projectRepository;
+
+    private final Map<String, String> memberColorMap = new HashMap<>();
 
     @Autowired
-    public EpicService(EpicRepository epicRepository, IssueRepository issueRepository) {
+    public EpicService(EpicRepository epicRepository, IssueRepository issueRepository, ProjectRepository projectRepository) {
         this.epicRepository = epicRepository;
         this.issueRepository = issueRepository;
+        this.projectRepository = projectRepository;
     }
 
     public Epic createEpic(NewEpicDTO newEpicDTO, Long projectId) {
@@ -84,6 +79,62 @@ public class EpicService {
 
     public String settingSprint(NewSprintDTO newSprintDTO) {
         epicRepository.findByTitle(newSprintDTO.getEpicTitle()).get().setSprintName(newSprintDTO.getSprintName());
-        return "success";
+        return epicRepository.findByTitle(newSprintDTO.getEpicTitle()).get().getId().toString();
+    }
+
+    public KanbanboardDTO getKanbanboard(Long projectId, Long epicId) {
+        KanbanboardDTO kanbanboardDTO = new KanbanboardDTO();
+        kanbanboardDTO.setProjectName(projectRepository.findById(projectId).getProjectName());
+        kanbanboardDTO.setSprintName(epicRepository.findById(epicId).getSprintName());
+        kanbanboardDTO.setSprintEndDate(epicRepository.findById(epicId).getEndDate());
+
+        List<Long> issueIds = epicRepository.findById(epicId).getIssueIds();
+        List<KanbanboardIssueDTO> kanbanboardIssueDTOs = new ArrayList<>();
+        for(int i = 0; i < issueIds.size(); i++) {
+            KanbanboardIssueDTO kanbanboardIssueDTO = new KanbanboardIssueDTO();
+            kanbanboardIssueDTO.setIssueId(issueIds.get(i));
+            kanbanboardIssueDTO.setIssueTitle(issueRepository.findById(issueIds.get(i)).getTitle());
+            kanbanboardIssueDTO.setProgressStatus(issueRepository.findById(issueIds.get(i)).getProgressStatus());
+
+            Map<String, String> mainMemberNameAndColor = new HashMap<>();
+
+            // 담당자 별로 색상 지정
+            if(memberColorMap.get(issueRepository.findById(issueIds.get(i)).getMainMemberName()) != null) {
+                mainMemberNameAndColor.put(issueRepository.findById(issueIds.get(i)).getMainMemberName(), memberColorMap.get(issueRepository.findById(issueIds.get(i)).getMainMemberName()));
+            } else {
+                memberColorMap.put(issueRepository.findById(issueIds.get(i)).getMainMemberName(), generateRandomColor());
+                mainMemberNameAndColor.put(issueRepository.findById(issueIds.get(i)).getMainMemberName(), memberColorMap.get(issueRepository.findById(issueIds.get(i)).getMainMemberName()));
+            }
+
+            kanbanboardIssueDTO.setMainMemberNameAndColor(mainMemberNameAndColor);
+            kanbanboardIssueDTOs.add(kanbanboardIssueDTO);
+        }
+        kanbanboardDTO.setKanbanboardIssueDTO(kanbanboardIssueDTOs);
+
+        return kanbanboardDTO;
+    }
+
+    private String generateRandomColor() {
+        Random random = new Random();
+        int red = random.nextInt(255);
+        int green = random.nextInt(255);
+        int blue = random.nextInt(255);
+        return String.format("#%02X%02X%02X", red, green, blue);
+    }
+
+    public KanbanboardEditIssueDTO editKanbanboard(Long issueId, String progressStatus) {
+        if(progressStatus.equals("Done")) {
+            issueRepository.findById(issueId).setProgressStatus(progressStatus);
+            issueRepository.findById(issueId).setIscompleted(true);
+        } else {
+            issueRepository.findById(issueId).setProgressStatus(progressStatus);
+            issueRepository.findById(issueId).setIscompleted(false);
+        }
+
+        KanbanboardEditIssueDTO editIssueDTO = new KanbanboardEditIssueDTO();
+        editIssueDTO.setIssudId(issueId);
+        editIssueDTO.setProgressStatus(progressStatus);
+
+        return editIssueDTO;
     }
 }
