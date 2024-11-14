@@ -1,6 +1,8 @@
 package SEproject.controller;
 
 import SEproject.domain.Member;
+import SEproject.dto.EditMemberDTO;
+import SEproject.dto.GetMyPage;
 import SEproject.dto.NewMemberDTO;
 import SEproject.dto.LoginMemberDTO;
 import SEproject.service.MemberService;
@@ -94,5 +96,47 @@ public class MemberController {
         }
 
         return memberService.projectList(memberId);
+    }
+
+    @GetMapping("SE/members/{memberId}")
+    public GetMyPage getMyPage(@PathVariable Long memberId, HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+
+        if(session != null) {
+            Object loginMember = session.getAttribute(SessionConst.LOGIN_MEMBER);
+            if(loginMember == null) {
+                return null;
+            }
+        }
+
+        return memberService.getMyPage(memberId);
+    }
+
+    @PostMapping("SE/members/{memberId}/edit")
+    public Member editMember(@RequestBody EditMemberDTO editMemberDTO, @PathVariable Long memberId, HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+
+        if(session != null) {
+            Object loginMember = session.getAttribute(SessionConst.LOGIN_MEMBER);
+            if(loginMember == null) {
+                return null;
+            }
+        }
+
+        return memberService.editMember(editMemberDTO, memberId);
+    }
+
+    @GetMapping("SE/members/{memberId}/edit")
+    public Member getMember(@PathVariable Long memberId, HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+
+        if(session != null) {
+            Object loginMember = session.getAttribute(SessionConst.LOGIN_MEMBER);
+            if(loginMember == null) {
+                return null;
+            }
+        }
+
+        return memberService.getMember(memberId);
     }
 }

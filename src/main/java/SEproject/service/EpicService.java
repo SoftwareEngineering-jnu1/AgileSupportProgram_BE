@@ -1,12 +1,10 @@
 package SEproject.service;
 
 import SEproject.domain.Epic;
+import SEproject.domain.Member;
 import SEproject.domain.SprintRetrospective;
 import SEproject.dto.*;
-import SEproject.repository.EpicRepository;
-import SEproject.repository.IssueRepository;
-import SEproject.repository.ProjectRepository;
-import SEproject.repository.SprintRetrospectiveRepository;
+import SEproject.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,15 +17,17 @@ public class EpicService {
     private final IssueRepository issueRepository;
     private final ProjectRepository projectRepository;
     private final SprintRetrospectiveRepository sprintRetrospectiveRepository;
+    private final MemberRepository memberRepository;
 
     private final Map<String, String> memberColorMap = new HashMap<>();
 
     @Autowired
-    public EpicService(EpicRepository epicRepository, IssueRepository issueRepository, ProjectRepository projectRepository, SprintRetrospectiveRepository sprintRetrospectiveRepository) {
+    public EpicService(EpicRepository epicRepository, IssueRepository issueRepository, ProjectRepository projectRepository, SprintRetrospectiveRepository sprintRetrospectiveRepository, MemberRepository memberRepository) {
         this.epicRepository = epicRepository;
         this.issueRepository = issueRepository;
         this.projectRepository = projectRepository;
         this.sprintRetrospectiveRepository = sprintRetrospectiveRepository;
+        this.memberRepository = memberRepository;
     }
 
     public Epic createEpic(NewEpicDTO newEpicDTO, Long projectId) {
@@ -165,6 +165,14 @@ public class EpicService {
 
         Long completeMemberCount = submit.getCompleteMemberCount();
         submit.setCompleteMemberCount(completeMemberCount + 1);
+
+        if(submit.getCompleteMemberCount().equals(submit.getTotalMemberCount())) {
+            List<Long> membersId = projectRepository.findById(projectId).getMembersId();
+            for(Long memberId : membersId) {
+                Member member = memberRepository.findById(memberId);
+                member.getSprintRetrospectives().add(submit);
+            }
+        }
 
         return "success";
     }

@@ -1,6 +1,10 @@
 package SEproject.service;
 
+import SEproject.domain.Epic;
 import SEproject.domain.Member;
+import SEproject.domain.Project;
+import SEproject.dto.EditMemberDTO;
+import SEproject.dto.GetMyPage;
 import SEproject.dto.LoginMemberDTO;
 import SEproject.dto.NewMemberDTO;
 import SEproject.repository.EpicRepository;
@@ -63,5 +67,45 @@ public class MemberService {
         }
 
         return result;
+    }
+
+    public GetMyPage getMyPage(Long memberId) {
+        Member member = memberRepository.findById(memberId);
+        GetMyPage result = new GetMyPage();
+
+        Map<String, Map<String, Boolean>> projectAndEpic = new HashMap<>();
+        for(Long projectId : member.getProjectIds()) {
+            // 프로젝트에 속해 있는 에픽 꺼내기
+            Map<String, Boolean> epics = new HashMap<>();
+            Project project = projectRepository.findById(projectId);
+            for(Long epicid : project.getEpicsId()) {
+                Epic epic = epicRepository.findById(epicid);
+                epics.put(epic.getTitle(), epic.getIsCompleted());
+
+                result.getSprintRetrospective().put(epic.getId(), epic.getSprintName());
+            }
+            projectAndEpic.put(project.getProjectName(), epics);
+        }
+        result.setProjectAndEpic(projectAndEpic);
+
+        result.setUsername(member.getUsername());
+        result.setPosition(member.getPosition());
+        result.setContactInfo(member.getContactInfo());
+        result.setCompanyOrSchool(member.getCompanyOrSchool());
+
+        return result;
+    }
+
+    public Member editMember(EditMemberDTO editMemberDTO, Long memberId) {
+        Member member = memberRepository.findById(memberId);
+        member.setCompanyOrSchool(editMemberDTO.getCompanyOrSchool());
+        member.setContactInfo(editMemberDTO.getContactInfo());
+        member.setPosition(editMemberDTO.getPosition());
+
+        return member;
+    }
+
+    public Member getMember(Long memberId) {
+        return memberRepository.findById(memberId);
     }
 }

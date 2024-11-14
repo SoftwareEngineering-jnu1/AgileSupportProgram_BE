@@ -13,4 +13,8 @@ public class Member {
     private String username;
     private String password;
     private List<Long> projectIds = new ArrayList<>();
+    private String position;
+    private String companyOrSchool;
+    private String contactInfo;
+    private List<SprintRetrospective> sprintRetrospectives = new ArrayList<>();
 }

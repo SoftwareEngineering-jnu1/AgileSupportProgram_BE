@@ -55,9 +55,9 @@ public class MemoryEpicRepository implements EpicRepository {
     @Override
     public EditEpicDTO edit(EditEpicDTO editEpicDTO, Long epicId) {
         Epic editEpic = store.get(epicId);
-        editEpic.setStartDate(editEpic.getStartDate());
-        editEpic.setEndDate(editEpic.getEndDate());
-        editEpic.setTitle(editEpic.getTitle());
+        editEpic.setStartDate(editEpicDTO.getStartDate());
+        editEpic.setEndDate(editEpicDTO.getEndDate());
+        editEpic.setTitle(editEpicDTO.getTitle());
         for(int i = 0; i < editEpicDTO.getDependency().size(); i++) {
             Long dependencyIssueId = issueRepository.findByTitle(editEpicDTO.getDependency().get(i)).get().getId();
             editEpic.getDependency().put(Long.valueOf(i), dependencyIssueId);
