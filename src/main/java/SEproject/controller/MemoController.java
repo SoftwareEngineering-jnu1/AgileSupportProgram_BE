@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class MemoController {
@@ -35,7 +36,7 @@ public class MemoController {
     }
 
     @GetMapping("SE/project/{projectId}/memo")
-    public List<Memo> getMemos(@PathVariable Long projectId, HttpServletRequest request) {
+    public Map<String, List<Memo>> getMemos(@PathVariable Long projectId, HttpServletRequest request) {
         HttpSession session = request.getSession(false);
 
         if(session != null) {
