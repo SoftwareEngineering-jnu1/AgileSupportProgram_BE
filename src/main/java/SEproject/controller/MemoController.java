@@ -7,6 +7,8 @@ import SEproject.web.SessionConst;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,58 +24,67 @@ public class MemoController {
     }
 
     @PostMapping("SE/project/{projectId}/memo/newmemo")
-    public Memo createMemo(@RequestBody NewMemoDTO memoDTO, @PathVariable Long projectId, HttpServletRequest request) {
-        HttpSession session = request.getSession(false);
-
-        if(session != null) {
-            Object loginMember = session.getAttribute(SessionConst.LOGIN_MEMBER);
-            if(loginMember == null) {
-                return null;
-            }
+    public ResponseEntity<?> createMemo(@RequestBody NewMemoDTO memoDTO, @PathVariable Long projectId, HttpServletRequest request) {
+        if (!isAuthenticated(request)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ApiResponse("fail", "Unauthorized access"));
         }
 
-        return memoService.createMemo(memoDTO, projectId);
+        Memo memo = memoService.createMemo(memoDTO, projectId);
+        return ResponseEntity.ok(new ApiResponse("success", memo));
     }
 
     @GetMapping("SE/project/{projectId}/memo")
-    public Map<String, List<Memo>> getMemos(@PathVariable Long projectId, HttpServletRequest request) {
-        HttpSession session = request.getSession(false);
-
-        if(session != null) {
-            Object loginMember = session.getAttribute(SessionConst.LOGIN_MEMBER);
-            if(loginMember == null) {
-                return null;
-            }
+    public ResponseEntity<?> getMemos(@PathVariable Long projectId, HttpServletRequest request) {
+        if (!isAuthenticated(request)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ApiResponse("fail", "Unauthorized access"));
         }
 
-        return memoService.getMemos(projectId);
+        Map<String, List<Memo>> memos = memoService.getMemos(projectId);
+        return ResponseEntity.ok(new ApiResponse("success", memos));
     }
 
     @GetMapping("SE/project/{projectId}/memo/{memoId}")
-    public Memo getMemo(@PathVariable Long memoId, HttpServletRequest request) {
-        HttpSession session = request.getSession(false);
-
-        if(session != null) {
-            Object loginMember = session.getAttribute(SessionConst.LOGIN_MEMBER);
-            if(loginMember == null) {
-                return null;
-            }
+    public ResponseEntity<?> getMemo(@PathVariable Long memoId, HttpServletRequest request) {
+        if (!isAuthenticated(request)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ApiResponse("fail", "Unauthorized access"));
         }
 
-        return memoService.getMemo(memoId);
+        Memo memo = memoService.getMemo(memoId);
+        return ResponseEntity.ok(new ApiResponse("success", memo));
     }
 
     @PostMapping("SE/project/{projectId}/memo/{memoId}")
-    public Memo correctionMemo(@RequestBody NewMemoDTO memoDTO, @PathVariable Long memoId, HttpServletRequest request) {
-        HttpSession session = request.getSession(false);
-
-        if(session != null) {
-            Object loginMember = session.getAttribute(SessionConst.LOGIN_MEMBER);
-            if(loginMember == null) {
-                return null;
-            }
+    public ResponseEntity<?> correctionMemo(@RequestBody NewMemoDTO memoDTO, @PathVariable Long memoId, HttpServletRequest request) {
+        if (!isAuthenticated(request)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ApiResponse("fail", "Unauthorized access"));
         }
 
-        return memoService.correctionMemo(memoDTO, memoId);
+        Memo memo = memoService.correctionMemo(memoDTO, memoId);
+        return ResponseEntity.ok(new ApiResponse("success", memo));
+    }
+
+    // 세션 처리
+    private boolean isAuthenticated(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        return session != null && session.getAttribute(SessionConst.LOGIN_MEMBER) != null;
+    }
+
+    // 응답 DTO를 위한 클래스
+    private static class ApiResponse {
+        private String status;
+        private Object data;
+
+        public ApiResponse(String status, Object data) {
+            this.status = status;
+            this.data = data;
+        }
+
+        public String getStatus() {
+            return status;
+        }
+
+        public Object getData() {
+            return data;
+        }
     }
 }
