@@ -8,6 +8,8 @@ import SEproject.web.SessionConst;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -20,44 +22,57 @@ public class IssueController {
     }
 
     @PostMapping("SE/project/{projectId}/{epicId}/addissue")
-    public Issue createIssue(@RequestBody NewIssueDTO newIssueDTO, @PathVariable Long epicId, HttpServletRequest request) {
-        HttpSession session = request.getSession(false);
-
-        if(session != null) {
-            Object loginMember = session.getAttribute(SessionConst.LOGIN_MEMBER);
-            if(loginMember == null) {
-                return null;
-            }
+    public ResponseEntity<?> createIssue(@RequestBody NewIssueDTO newIssueDTO, @PathVariable Long epicId, HttpServletRequest request) {
+        if (!isAuthenticated(request)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ApiResponse("fail", "Unauthorized access"));
         }
 
-        return issueService.createIssue(newIssueDTO, epicId);
+        Issue issue = issueService.createIssue(newIssueDTO, epicId);
+        return ResponseEntity.ok(new ApiResponse("success", issue));
     }
 
     @PostMapping("SE/project/{projectId}/{epicId}/{issueId}/edit")
-    public EditIssueDTO correctionIssue(@RequestBody NewIssueDTO newIssueDTO, @PathVariable Long epicId , @PathVariable Long issueId, HttpServletRequest request) {
-        HttpSession session = request.getSession(false);
-
-        if(session != null) {
-            Object loginMember = session.getAttribute(SessionConst.LOGIN_MEMBER);
-            if(loginMember == null) {
-                return null;
-            }
+    public ResponseEntity<?> correctionIssue(@RequestBody NewIssueDTO newIssueDTO, @PathVariable Long epicId , @PathVariable Long issueId, HttpServletRequest request) {
+        if (!isAuthenticated(request)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ApiResponse("fail", "Unauthorized access"));
         }
 
-        return issueService.correctionIssue(newIssueDTO, epicId ,issueId);
+        EditIssueDTO editIssueDTO = issueService.correctionIssue(newIssueDTO, epicId, issueId);
+        return ResponseEntity.ok(new ApiResponse("success", editIssueDTO));
     }
 
     @GetMapping("SE/project/{projectId}/{epicId}/{issueId}/edit")
-    public Issue checkIssue(@PathVariable Long issueId, HttpServletRequest request) {
-        HttpSession session = request.getSession(false);
-
-        if(session != null) {
-            Object loginMember = session.getAttribute(SessionConst.LOGIN_MEMBER);
-            if(loginMember == null) {
-                return null;
-            }
+    public ResponseEntity<?> checkIssue(@PathVariable Long issueId, HttpServletRequest request) {
+        if (!isAuthenticated(request)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ApiResponse("fail", "Unauthorized access"));
         }
 
-        return issueService.checkIssue(issueId);
+        Issue issue = issueService.checkIssue(issueId);
+        return ResponseEntity.ok(new ApiResponse("success", issue));
+    }
+
+    // 세션 처리
+    private boolean isAuthenticated(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        return session != null && session.getAttribute(SessionConst.LOGIN_MEMBER) != null;
+    }
+
+    // 응답 DTO를 위한 클래스
+    private static class ApiResponse {
+        private String status;
+        private Object data;
+
+        public ApiResponse(String status, Object data) {
+            this.status = status;
+            this.data = data;
+        }
+
+        public String getStatus() {
+            return status;
+        }
+
+        public Object getData() {
+            return data;
+        }
     }
 }
