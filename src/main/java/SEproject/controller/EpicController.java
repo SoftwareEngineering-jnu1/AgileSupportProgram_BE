@@ -8,6 +8,8 @@ import SEproject.web.SessionConst;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -23,108 +25,103 @@ public class EpicController {
     }
 
     @PostMapping("SE/project/{projectId}/addepic")
-    public Epic createEpic(@RequestBody NewEpicDTO newEpicDTO, @PathVariable Long projectId, HttpServletRequest request) {
-        HttpSession session = request.getSession(false);
-
-        if(session != null) {
-            Object loginMember = session.getAttribute(SessionConst.LOGIN_MEMBER);
-            if(loginMember == null) {
-                return new Epic();
-            }
+    public ResponseEntity<?> createEpic(@RequestBody NewEpicDTO newEpicDTO, @PathVariable Long projectId, HttpServletRequest request) {
+        if (!isAuthenticated(request)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ApiResponse("fail", "Unauthorized access"));
         }
 
-        return epicService.createEpic(newEpicDTO, projectId);
+        Epic epic = epicService.createEpic(newEpicDTO, projectId);
+        return ResponseEntity.ok(new ApiResponse("success", epic));
     }
 
     @PostMapping("SE/project/{projectId}/{epicId}/edit")
-    public EditEpicDTO correctionEpic(@RequestBody EditEpicDTO editEpicDTO, @PathVariable Long epicId, HttpServletRequest request) {
-        HttpSession session = request.getSession(false);
-
-        if(session != null) {
-            Object loginMember = session.getAttribute(SessionConst.LOGIN_MEMBER);
-            if(loginMember == null) {
-                return new EditEpicDTO();
-            }
+    public ResponseEntity<?> correctionEpic(@RequestBody EditEpicDTO editEpicDTO, @PathVariable Long epicId, HttpServletRequest request) {
+        if (!isAuthenticated(request)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ApiResponse("fail", "Unauthorized access"));
         }
 
-        return epicService.correctionEpic(editEpicDTO, epicId);
+        EditEpicDTO editEpicDTO1 = epicService.correctionEpic(editEpicDTO, epicId);
+        return ResponseEntity.ok(new ApiResponse("success", editEpicDTO1));
     }
 
     @GetMapping("SE/project/{projectId}/{epicId}/edit")
-    public EditEpicDTO checkEpic(@PathVariable Long epicId, HttpServletRequest request) {
-        HttpSession session = request.getSession(false);
-
-        if(session != null) {
-            Object loginMember = session.getAttribute(SessionConst.LOGIN_MEMBER);
-            if(loginMember == null) {
-                return new EditEpicDTO();
-            }
+    public ResponseEntity<?> checkEpic(@PathVariable Long epicId, HttpServletRequest request) {
+        if (!isAuthenticated(request)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ApiResponse("fail", "Unauthorized access"));
         }
 
-        return epicService.checkEpic(epicId);
+        EditEpicDTO editEpicDTO = epicService.checkEpic(epicId);
+        return ResponseEntity.ok(new ApiResponse("success", editEpicDTO));
     }
 
     @PostMapping("SE/project/{projectId}/kanbanboard/newsprint")
-    public Map<String, String> settingSprint(@RequestBody NewSprintDTO newSprintDTO, @PathVariable Long projectId,HttpServletRequest request) {
-        HttpSession session = request.getSession(false);
-
-        if(session != null) {
-            Object loginMember = session.getAttribute(SessionConst.LOGIN_MEMBER);
-            if(loginMember == null) {
-                return new HashMap<>();
-            }
+    public ResponseEntity<?> settingSprint(@RequestBody NewSprintDTO newSprintDTO, @PathVariable Long projectId,HttpServletRequest request) {
+        if (!isAuthenticated(request)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ApiResponse("fail", "Unauthorized access"));
         }
 
         Map<String, String> result = new HashMap<>();
 
         if(epicService.settingSprint(newSprintDTO, projectId) != null) {
             result.put("epicId", epicService.settingSprint(newSprintDTO, projectId));
-            return result;
+            return ResponseEntity.ok(new ApiResponse("success", result));
         } else {
-            result.put("epicId", null);
-            return result;
+            return ResponseEntity.badRequest().body(new ApiResponse("fail", "존재하지 않는 에픽 title을 넘겨주었음"));
         }
     }
 
     @GetMapping("SE/project/{projectId}/kanbanboard/{epicId}")
-    public KanbanboardDTO getKanbanboard(@PathVariable Long projectId, @PathVariable Long epicId, HttpServletRequest request) {
-        HttpSession session = request.getSession(false);
-
-        if(session != null) {
-            Object loginMember = session.getAttribute(SessionConst.LOGIN_MEMBER);
-            if(loginMember == null) {
-                return new KanbanboardDTO();
-            }
+    public ResponseEntity<?> getKanbanboard(@PathVariable Long projectId, @PathVariable Long epicId, HttpServletRequest request) {
+        if (!isAuthenticated(request)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ApiResponse("fail", "Unauthorized access"));
         }
 
-        return epicService.getKanbanboard(projectId, epicId);
+        KanbanboardDTO kanbanboard = epicService.getKanbanboard(projectId, epicId);
+        return ResponseEntity.ok(new ApiResponse("success", kanbanboard));
     }
 
     @PostMapping("SE/project/{projectId}/kanbanboard/{epicId}/{issueId}")
-    public KanbanboardEditIssueDTO editKanbanboard(@RequestBody KanbanboardEditIssueDTO kanbanboardEditIssueDTO, @PathVariable Long epicId ,@PathVariable Long issueId, HttpServletRequest request) {
-        HttpSession session = request.getSession(false);
-
-        if(session != null) {
-            Object loginMember = session.getAttribute(SessionConst.LOGIN_MEMBER);
-            if(loginMember == null) {
-                return new KanbanboardEditIssueDTO();
-            }
+    public ResponseEntity<?> editKanbanboard(@RequestBody KanbanboardEditIssueDTO kanbanboardEditIssueDTO, @PathVariable Long epicId ,@PathVariable Long issueId, HttpServletRequest request) {
+        if (!isAuthenticated(request)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ApiResponse("fail", "Unauthorized access"));
         }
 
-        return epicService.editKanbanboard(epicId, issueId, kanbanboardEditIssueDTO.getProgressStatus());
+        KanbanboardEditIssueDTO kanbanboardEditIssueDTO1 = epicService.editKanbanboard(epicId, issueId, kanbanboardEditIssueDTO.getProgressStatus());
+        return ResponseEntity.ok(new ApiResponse("success", kanbanboardEditIssueDTO1));
     }
 
     @PostMapping("SE/project/{projectId}/kanbanboard/{epicId}/review")
-    public SprintRetrospective submitRetrospective(@RequestBody SubmitRetrospectiveDTO submitRetrospectiveDTO, @PathVariable Long projectId, @PathVariable Long epicId, HttpServletRequest request) {
-        HttpSession session = request.getSession(false);
-
-        if(session != null) {
-            Object loginMember = session.getAttribute(SessionConst.LOGIN_MEMBER);
-            if(loginMember == null) {
-                return new SprintRetrospective();
-            }
+    public ResponseEntity<?> submitRetrospective(@RequestBody SubmitRetrospectiveDTO submitRetrospectiveDTO, @PathVariable Long projectId, @PathVariable Long epicId, HttpServletRequest request) {
+        if (!isAuthenticated(request)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ApiResponse("fail", "Unauthorized access"));
         }
 
-        return epicService.submitRetrospective(submitRetrospectiveDTO, projectId, epicId);
+        SprintRetrospective sprintRetrospective = epicService.submitRetrospective(submitRetrospectiveDTO, projectId, epicId);
+        return ResponseEntity.ok(new ApiResponse("success", sprintRetrospective));
+    }
+
+    // 세션 처리
+    private boolean isAuthenticated(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        return session != null && session.getAttribute(SessionConst.LOGIN_MEMBER) != null;
+    }
+
+    // 응답 DTO를 위한 클래스
+    private static class ApiResponse {
+        private String status;
+        private Object data;
+
+        public ApiResponse(String status, Object data) {
+            this.status = status;
+            this.data = data;
+        }
+
+        public String getStatus() {
+            return status;
+        }
+
+        public Object getData() {
+            return data;
+        }
     }
 }
