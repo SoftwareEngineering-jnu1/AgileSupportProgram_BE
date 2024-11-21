@@ -158,11 +158,11 @@ public class EpicService {
         return editIssueDTO;
     }
 
-    public String submitRetrospective(SubmitRetrospectiveDTO submitRetrospectiveDTO, Long projectId, Long epicId) {
+    public SprintRetrospective submitRetrospective(SubmitRetrospectiveDTO submitRetrospectiveDTO, Long projectId, Long epicId) {
         SprintRetrospective submit = sprintRetrospectiveRepository.findByEpicId(epicId);
 
         if(submit == null) {
-            return "failed";
+            return new SprintRetrospective();
         }
 
         submit.getStop().add(submitRetrospectiveDTO.getStop());
@@ -180,6 +180,6 @@ public class EpicService {
             }
         }
 
-        return "success";
+        return submit;
     }
 }

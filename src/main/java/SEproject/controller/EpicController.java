@@ -1,6 +1,7 @@
 package SEproject.controller;
 
 import SEproject.domain.Epic;
+import SEproject.domain.SprintRetrospective;
 import SEproject.dto.*;
 import SEproject.service.EpicService;
 import SEproject.web.SessionConst;
@@ -28,7 +29,7 @@ public class EpicController {
         if(session != null) {
             Object loginMember = session.getAttribute(SessionConst.LOGIN_MEMBER);
             if(loginMember == null) {
-                return null;
+                return new Epic();
             }
         }
 
@@ -42,7 +43,7 @@ public class EpicController {
         if(session != null) {
             Object loginMember = session.getAttribute(SessionConst.LOGIN_MEMBER);
             if(loginMember == null) {
-                return null;
+                return new EditEpicDTO();
             }
         }
 
@@ -56,7 +57,7 @@ public class EpicController {
         if(session != null) {
             Object loginMember = session.getAttribute(SessionConst.LOGIN_MEMBER);
             if(loginMember == null) {
-                return null;
+                return new EditEpicDTO();
             }
         }
 
@@ -70,7 +71,7 @@ public class EpicController {
         if(session != null) {
             Object loginMember = session.getAttribute(SessionConst.LOGIN_MEMBER);
             if(loginMember == null) {
-                return null;
+                return new HashMap<>();
             }
         }
 
@@ -92,7 +93,7 @@ public class EpicController {
         if(session != null) {
             Object loginMember = session.getAttribute(SessionConst.LOGIN_MEMBER);
             if(loginMember == null) {
-                return null;
+                return new KanbanboardDTO();
             }
         }
 
@@ -106,7 +107,7 @@ public class EpicController {
         if(session != null) {
             Object loginMember = session.getAttribute(SessionConst.LOGIN_MEMBER);
             if(loginMember == null) {
-                return null;
+                return new KanbanboardEditIssueDTO();
             }
         }
 
@@ -114,13 +115,13 @@ public class EpicController {
     }
 
     @PostMapping("SE/project/{projectId}/kanbanboard/{epicId}/review")
-    public String submitRetrospective(@RequestBody SubmitRetrospectiveDTO submitRetrospectiveDTO, @PathVariable Long projectId, @PathVariable Long epicId, HttpServletRequest request) {
+    public SprintRetrospective submitRetrospective(@RequestBody SubmitRetrospectiveDTO submitRetrospectiveDTO, @PathVariable Long projectId, @PathVariable Long epicId, HttpServletRequest request) {
         HttpSession session = request.getSession(false);
 
         if(session != null) {
             Object loginMember = session.getAttribute(SessionConst.LOGIN_MEMBER);
             if(loginMember == null) {
-                return null;
+                return new SprintRetrospective();
             }
         }
 
