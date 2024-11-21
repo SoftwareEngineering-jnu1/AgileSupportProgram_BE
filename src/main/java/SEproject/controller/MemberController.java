@@ -124,8 +124,8 @@ public class MemberController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ApiResponse("fail", "Unauthorized access"));
         }
 
-        GetSprintRetrospective getSprintRetrospective = memberService.getsprintRetrospective(memberId, epicId);
-        return ResponseEntity.ok(new ApiResponse("success", getSprintRetrospective));
+        GetSprintRetrospectiveDTO getSprintRetrospectiveDTO = memberService.getsprintRetrospective(memberId, epicId);
+        return ResponseEntity.ok(new ApiResponse("success", getSprintRetrospectiveDTO));
     }
 
     // 세션 처리

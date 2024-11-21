@@ -71,21 +71,25 @@ public class MemberService {
         Member member = memberRepository.findById(memberId);
         GetMyPage result = new GetMyPage();
 
+        // 프로젝트마다 완료한 에픽/미완료한 에픽 표시
         Map<String, Map<String, Boolean>> projectAndEpic = new HashMap<>();
         for(Long projectId : member.getProjectIds()) {
-            // 프로젝트에 속해 있는 에픽 꺼내기
-            Map<String, Boolean> epics = new HashMap<>();
             Project project = projectRepository.findById(projectId);
+
+            // 프로젝트별 에픽 추출
+            Map<String, Boolean> epics = new HashMap<>();
             for(Long epicid : project.getEpicsId()) {
                 Epic epic = epicRepository.findById(epicid);
                 epics.put(epic.getTitle(), epic.getIsCompleted());
 
                 result.getSprintRetrospective().put(epic.getId(), epic.getSprintName());
             }
+
             projectAndEpic.put(project.getProjectName(), epics);
         }
         result.setProjectAndEpic(projectAndEpic);
 
+        // 기타 회원 정보 삽입
         result.setUsername(member.getUsername());
         result.setPosition(member.getPosition());
         result.setContactInfo(member.getContactInfo());
@@ -96,6 +100,8 @@ public class MemberService {
 
     public Member editMember(EditMemberDTO editMemberDTO, Long memberId) {
         Member member = memberRepository.findById(memberId);
+
+        // 회원 정보 수정
         member.setCompanyOrSchool(editMemberDTO.getCompanyOrSchool());
         member.setContactInfo(editMemberDTO.getContactInfo());
         member.setPosition(editMemberDTO.getPosition());
@@ -107,15 +113,18 @@ public class MemberService {
         return memberRepository.findById(memberId);
     }
 
-    public GetSprintRetrospective getsprintRetrospective(Long memberId, Long epicId) {
+    public GetSprintRetrospectiveDTO getsprintRetrospective(Long memberId, Long epicId) {
         Member member = memberRepository.findById(memberId);
+
+        // 멤버가 보유한 스프린트 회고 추출
         SprintRetrospective sprintRetrospective = member.getSprintRetrospectives().get(epicId);
 
-        GetSprintRetrospective getSprintRetrospective = new GetSprintRetrospective();
-        getSprintRetrospective.setContinue(sprintRetrospective.getContinue());
-        getSprintRetrospective.setStop(sprintRetrospective.getStop());
-        getSprintRetrospective.setStart(sprintRetrospective.getStart());
+        // 멤버가 보유한 스프린트 회고를 DTO에 담음
+        GetSprintRetrospectiveDTO getSprintRetrospectiveDTO = new GetSprintRetrospectiveDTO();
+        getSprintRetrospectiveDTO.setContinue(sprintRetrospective.getContinue());
+        getSprintRetrospectiveDTO.setStop(sprintRetrospective.getStop());
+        getSprintRetrospectiveDTO.setStart(sprintRetrospective.getStart());
 
-        return getSprintRetrospective;
+        return getSprintRetrospectiveDTO;
     }
 }
