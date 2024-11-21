@@ -8,6 +8,8 @@ import SEproject.web.SessionConst;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,44 +25,57 @@ public class ProjectController {
     }
 
     @PostMapping("SE/project/new")
-    public Project createProject(@RequestBody NewProjectDTO newProjectDTO, HttpServletRequest request) {
-        HttpSession session = request.getSession(false);
-
-        if(session != null) {
-            Object loginMember = session.getAttribute(SessionConst.LOGIN_MEMBER);
-            if(loginMember == null) {
-                return null;
-            }
+    public ResponseEntity<?> createProject(@RequestBody NewProjectDTO newProjectDTO, HttpServletRequest request) {
+        if (!isAuthenticated(request)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ApiResponse("fail", "Unauthorized access"));
         }
 
-        return projectService.createProject(newProjectDTO);
+        Project project = projectService.createProject(newProjectDTO);
+        return ResponseEntity.ok(new ApiResponse("success", project));
     }
 
     @GetMapping("SE/project/{projectId}/timeline")
-    public Map<String, List<TimelineEpicDTO>> getTimeline(@PathVariable Long projectId, HttpServletRequest request) {
-        HttpSession session = request.getSession(false);
-
-        if(session != null) {
-            Object loginMember = session.getAttribute(SessionConst.LOGIN_MEMBER);
-            if(loginMember == null) {
-                return null;
-            }
+    public ResponseEntity<?> getTimeline(@PathVariable Long projectId, HttpServletRequest request) {
+        if (!isAuthenticated(request)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ApiResponse("fail", "Unauthorized access"));
         }
 
-        return projectService.getTimeline(projectId);
+        Map<String, List<TimelineEpicDTO>> timeline = projectService.getTimeline(projectId);
+        return ResponseEntity.ok(new ApiResponse("success", timeline));
     }
 
     @GetMapping("SE/project/{projectId}/kanbanboard/newsprint")
-    public List<String> getEpics(@PathVariable Long projectId, HttpServletRequest request) {
-        HttpSession session = request.getSession(false);
-
-        if(session != null) {
-            Object loginMember = session.getAttribute(SessionConst.LOGIN_MEMBER);
-            if(loginMember == null) {
-                return null;
-            }
+    public ResponseEntity<?> getEpics(@PathVariable Long projectId, HttpServletRequest request) {
+        if (!isAuthenticated(request)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ApiResponse("fail", "Unauthorized access"));
         }
 
-        return projectService.getEpics(projectId);
+        List<String> epics = projectService.getEpics(projectId);
+        return ResponseEntity.ok(new ApiResponse("success", epics));
+    }
+
+    // 세션 처리
+    private boolean isAuthenticated(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        return session != null && session.getAttribute(SessionConst.LOGIN_MEMBER) != null;
+    }
+
+    // 응답 DTO를 위한 클래스
+    private static class ApiResponse {
+        private String status;
+        private Object data;
+
+        public ApiResponse(String status, Object data) {
+            this.status = status;
+            this.data = data;
+        }
+
+        public String getStatus() {
+            return status;
+        }
+
+        public Object getData() {
+            return data;
+        }
     }
 }
