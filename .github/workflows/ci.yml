@@ -1,33 +1,40 @@
-name: Java CI
+name: CI for SEProject
 
 on:
   push:
     branches:
-      - main
+      - main            # main 브랜치로의 push를 감지하여 CI 실행
+      - 'feature/**'    # feature/로 시작하는 모든 브랜치의 push를 감지하여 CI 실행
   pull_request:
     branches:
-      - main
+      - main            # main 브랜치로의 pull request를 감지하여 CI 실행
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Check out the code
         uses: actions/checkout@v3
 
-      - name: Setup JDK
+      - name: Set up JDK
         uses: actions/setup-java@v3
         with:
-          distribution: 'temurin' # OpenJDK 배포판
-          java-version: '17' # 로컬 환경과 동일한 Java 버전 사용
+          distribution: 'temurin'
+          java-version: '23'
 
-      - name: Cache Gradle packages
+      - name: Cache Gradle dependencies
         uses: actions/cache@v3
         with:
           path: ~/.gradle/caches
-          key: gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: gradle-
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Build with Gradle
+        run: ./gradlew build --no-daemon
 
       - name: Run tests
         run: ./gradlew test --no-daemon
+
+
