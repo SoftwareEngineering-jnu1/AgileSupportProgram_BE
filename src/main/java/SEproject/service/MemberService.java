@@ -61,6 +61,8 @@ public class MemberService {
             }
             epicRatio.put("completedEpics", completedEpics);
 
+            epicRatio.put("projectId", projectId);
+
             result.put(projectRepository.findById(projectId).getProjectName(), epicRatio);
         }
 
@@ -121,7 +123,7 @@ public class MemberService {
 
         // 멤버가 보유한 스프린트 회고를 DTO에 담음
         GetSprintRetrospectiveDTO getSprintRetrospectiveDTO = new GetSprintRetrospectiveDTO();
-        getSprintRetrospectiveDTO.setContinue(sprintRetrospective.getContinue());
+        getSprintRetrospectiveDTO.setContinueAction(sprintRetrospective.getContinueAction());
         getSprintRetrospectiveDTO.setStop(sprintRetrospective.getStop());
         getSprintRetrospectiveDTO.setStart(sprintRetrospective.getStart());
 

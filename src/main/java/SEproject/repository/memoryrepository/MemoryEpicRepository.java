@@ -58,9 +58,10 @@ public class MemoryEpicRepository implements EpicRepository {
         editEpic.setStartDate(editEpicDTO.getStartDate());
         editEpic.setEndDate(editEpicDTO.getEndDate());
         editEpic.setTitle(editEpicDTO.getTitle());
-        for(int i = 0; i < editEpicDTO.getDependency().size(); i++) {
-            Long dependencyIssueId = issueRepository.findByTitle(editEpicDTO.getDependency().get(i)).get().getId();
-            editEpic.getDependency().put(Long.valueOf(i), dependencyIssueId);
+
+        if(!editEpicDTO.getDependency().isEmpty()) {
+            editEpic.getDependency().put(0L, issueRepository.findByTitle(editEpicDTO.getDependency().get(0L)).get().getId());
+            editEpic.getDependency().put(1L, issueRepository.findByTitle(editEpicDTO.getDependency().get(1L)).get().getId());
         }
 
         return editEpicDTO;

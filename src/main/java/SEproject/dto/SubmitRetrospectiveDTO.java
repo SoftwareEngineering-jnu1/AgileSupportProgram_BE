@@ -8,5 +8,5 @@ import lombok.Setter;
 public class SubmitRetrospectiveDTO {
     private String stop;
     private String start;
-    private String Continue;
+    private String continueAction;
 }

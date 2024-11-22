@@ -34,8 +34,8 @@ public class MemberController {
         }
 
         // 회원 가입 수행
-        memberService.createMember(memberJoinDTO);
-        return ResponseEntity.ok(new ApiResponse("success", "Join successfully"));
+        Member member = memberService.createMember(memberJoinDTO);
+        return ResponseEntity.ok(new ApiResponse("success", member.getId()));
     }
 
     @PostMapping("SE/login")
@@ -61,7 +61,7 @@ public class MemberController {
         // 첫 번째 매개변수 : 키(문자열), 두 번째 매개변수 : 저장할 데이터 객체
         session.setAttribute(SessionConst.LOGIN_MEMBER, loginMember);
 
-        return ResponseEntity.ok(new ApiResponse("success", "Login successful"));
+        return ResponseEntity.ok(new ApiResponse("success", loginMember.getId()));
     }
 
     @PostMapping("SE/logout")

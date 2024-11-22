@@ -167,7 +167,7 @@ public class EpicService {
 
         submit.getStop().add(submitRetrospectiveDTO.getStop());
         submit.getStart().add(submitRetrospectiveDTO.getStart());
-        submit.getContinue().add(submitRetrospectiveDTO.getContinue());
+        submit.getContinueAction().add(submitRetrospectiveDTO.getContinueAction());
 
         Long completeMemberCount = submit.getCompleteMemberCount();
         submit.setCompleteMemberCount(completeMemberCount + 1);

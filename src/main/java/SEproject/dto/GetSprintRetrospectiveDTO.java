@@ -10,5 +10,5 @@ import java.util.List;
 public class GetSprintRetrospectiveDTO {
     private List<String> stop;
     private List<String> start;
-    private List<String> Continue;
+    private List<String> continueAction;
 }
