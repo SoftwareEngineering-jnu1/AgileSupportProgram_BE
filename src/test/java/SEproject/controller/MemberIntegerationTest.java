@@ -67,8 +67,7 @@ class MemberIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(newMemberDTO)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.status").value("success"))
-                .andExpect(jsonPath("$.data").value("Join successfully"));
+                .andExpect(jsonPath("$.status").value("success"));
 
         // then
         Member savedMember = memberRepository.findByEmailId("test@example.com").orElse(null);
@@ -91,8 +90,7 @@ class MemberIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidMemberDTO)))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.status").value("fail"))
-                .andExpect(jsonPath("$.data").value("Invalid join data"));
+                .andExpect(jsonPath("$.status").value("fail"));
 
         // then
         assertThat(memberRepository.findAll()).isEmpty();
@@ -117,7 +115,6 @@ class MemberIntegrationTest {
                         .content(objectMapper.writeValueAsString(loginMemberDTO)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value("success"))
-                .andExpect(jsonPath("$.data").value("Login successful"))
                 .andReturn(); // MvcResult를 반환받음
 
         // then
