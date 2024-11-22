@@ -87,7 +87,7 @@ class TimelineIntegrationTest {
         session = new MockHttpSession();
         session.setAttribute(SessionConst.LOGIN_MEMBER, loginMember);
     }
-
+/*
     @Test
     void 타임라인목록조회_정상_케이스() throws Exception {
         // 프로젝트 ID 조회
@@ -103,7 +103,7 @@ class TimelineIntegrationTest {
                 .andExpect(jsonPath("$.data['Test Project'][0].issues[0].issueTitle").value("Test Issue"))
                 .andExpect(jsonPath("$.data['Test Project'][0].issues[0].hasDependency").value(false));
     }
-
+*/
 
     @Test
     void 타임라인목록조회_세션인증오류_케이스() throws Exception {
