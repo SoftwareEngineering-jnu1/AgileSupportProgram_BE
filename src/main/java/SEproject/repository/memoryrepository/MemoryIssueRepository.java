@@ -5,10 +5,12 @@ import SEproject.dto.NewIssueDTO;
 import SEproject.repository.EpicRepository;
 import SEproject.repository.IssueRepository;
 import SEproject.repository.MemberRepository;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;

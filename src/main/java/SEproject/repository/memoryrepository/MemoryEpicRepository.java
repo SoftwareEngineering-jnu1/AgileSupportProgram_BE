@@ -97,4 +97,8 @@ public class MemoryEpicRepository implements EpicRepository {
         save(newEpicDTO2, 1L);
         save(newEpicDTO3, 2L);
     }
+
+    public void clear() {
+        store.clear();
+    }
 }
