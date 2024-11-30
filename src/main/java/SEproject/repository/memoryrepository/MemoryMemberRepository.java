@@ -82,4 +82,8 @@ public class MemoryMemberRepository implements MemberRepository {
         save(newMemberDTO3);
         save(newMemberDTO4);
     }
+
+    public void clear() {
+        store.clear();
+    }
 }

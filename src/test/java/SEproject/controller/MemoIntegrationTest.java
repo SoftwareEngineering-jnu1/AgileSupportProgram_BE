@@ -52,6 +52,7 @@ class MemoIntegrationTest {
 
     @BeforeEach
     void setUp() {
+        memoryProjectRepository.clear();
         // 회원 데이터 설정
         NewMemberDTO member1 = new NewMemberDTO();
         member1.setUsername("User One");
