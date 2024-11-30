@@ -81,7 +81,7 @@ public class MemoryProjectRepository implements ProjectRepository {
         newProjectDTO3.setProjectName("테스트 프로젝트 이름 3");
         List<String> membersEmailId3 = new ArrayList<>();
         membersEmailId3.add("emailId1@gmail.com");
-        newProjectDTO1.setMembersEmailId(membersEmailId3);
+        newProjectDTO3.setMembersEmailId(membersEmailId3);
 
         save(newProjectDTO1);
         save(newProjectDTO2);
