@@ -53,4 +53,33 @@ public class MemoryMemberRepository implements MemberRepository {
                 .filter(m -> m.getUsername().equals(username))
                 .findFirst();
     }
+
+    // 테스트용 데이터
+    @PostConstruct
+    public void init() {
+        NewMemberDTO newMemberDTO1 = new NewMemberDTO();
+        newMemberDTO1.setEmailId("emailId1@gmail.com");
+        newMemberDTO1.setUsername("곽명길");
+        newMemberDTO1.setPassword("123456");
+
+        NewMemberDTO newMemberDTO2 = new NewMemberDTO();
+        newMemberDTO2.setEmailId("emailId2@gmail.com");
+        newMemberDTO2.setUsername("구동민");
+        newMemberDTO2.setPassword("123456");
+
+        NewMemberDTO newMemberDTO3 = new NewMemberDTO();
+        newMemberDTO3.setEmailId("emailId3@gmail.com");
+        newMemberDTO3.setUsername("강호정");
+        newMemberDTO3.setPassword("123456");
+
+        NewMemberDTO newMemberDTO4 = new NewMemberDTO();
+        newMemberDTO4.setEmailId("emailId4@gmail.com");
+        newMemberDTO4.setUsername("기은빈");
+        newMemberDTO4.setPassword("123456");
+
+        save(newMemberDTO1);
+        save(newMemberDTO2);
+        save(newMemberDTO3);
+        save(newMemberDTO4);
+    }
 }
