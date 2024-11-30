@@ -1,6 +1,7 @@
 package SEproject.repository.memoryrepository;
 
 import SEproject.domain.Project;
+import SEproject.dto.NewMemberDTO;
 import SEproject.dto.NewProjectDTO;
 import SEproject.repository.ProjectRepository;
 import jakarta.annotation.PostConstruct;
@@ -54,5 +55,32 @@ public class MemoryProjectRepository implements ProjectRepository {
     @Override
     public void addEpic(Long projectId, Long epicId) {
         store.get(projectId).getEpicsId().add(epicId);
+    }
+
+    // 테스트용 데이터
+    @PostConstruct
+    public void init() {
+        NewProjectDTO newProjectDTO1 = new NewProjectDTO();
+        newProjectDTO1.setProjectName("테스트 프로젝트 이름 1");
+        List<String> membersEmailId1 = new ArrayList<>();
+        membersEmailId1.add("emailId1@gmail.com");
+        membersEmailId1.add("emailId2@gmail.com");
+        membersEmailId1.add("emailId3@gmail.com");
+        membersEmailId1.add("emailId4@gmail.com");
+        newProjectDTO1.setMembersEmailId(membersEmailId1);
+
+        NewProjectDTO newProjectDTO2 = new NewProjectDTO();
+        newProjectDTO2.setProjectName("테스트 프로젝트 이름 2");
+        List<String> membersEmailId2 = new ArrayList<>();
+        membersEmailId2.add("emailId1@gmail.com");
+        membersEmailId2.add("emailId2@gmail.com");
+        membersEmailId2.add("emailId3@gmail.com");
+        newProjectDTO2.setMembersEmailId(membersEmailId2);
+
+        NewProjectDTO newProjectDTO3 = new NewProjectDTO();
+        newProjectDTO3.setProjectName("테스트 프로젝트 이름 3");
+        List<String> membersEmailId3 = new ArrayList<>();
+        membersEmailId3.add("emailId1@gmail.com");
+        newProjectDTO1.setMembersEmailId(membersEmailId3);
     }
 }
