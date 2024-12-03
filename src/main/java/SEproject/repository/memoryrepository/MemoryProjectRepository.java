@@ -1,5 +1,6 @@
 package SEproject.repository.memoryrepository;
 
+import SEproject.domain.Member;
 import SEproject.domain.Project;
 import SEproject.dto.NewMemberDTO;
 import SEproject.dto.NewProjectDTO;
@@ -41,11 +42,18 @@ public class MemoryProjectRepository implements ProjectRepository {
         project.setProjectName(newProjectDTO.getProjectName());
         List<Long> memberIds = new ArrayList<>();
         List<String> membersEmailId = newProjectDTO.getMembersEmailId();
+
         for(int i = 0; i < membersEmailId.size(); i++) {
+
+            if(memoryMemberRepository.findByEmailId(membersEmailId.get(i)).isEmpty()) {
+                return null;
+            }
+
             memberIds.add(memoryMemberRepository.findByEmailId(membersEmailId.get(i)).get().getId());
             Long memberid = memoryMemberRepository.findByEmailId(membersEmailId.get(i)).get().getId();
             memoryMemberRepository.findById(memberid).getProjectIds().add(project.getId());
         }
+
         project.setMembersId(memberIds);
         store.put(project.getId(), project);
 

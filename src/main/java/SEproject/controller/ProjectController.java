@@ -31,6 +31,10 @@ public class ProjectController {
         }
 
         Project project = projectService.createProject(newProjectDTO);
+
+        if (project == null) {
+            return ResponseEntity.badRequest().body(new ApiResponse("fail", "존재하지 않는 회원 정보를 입력하였습니다"));
+        }
         return ResponseEntity.ok(new ApiResponse("success", project));
     }
 
