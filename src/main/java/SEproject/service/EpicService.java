@@ -39,11 +39,22 @@ public class EpicService {
         List<Long> issueIds = epic.getIssueIds();
 
         Long completedIssues = 0L;
-        for(int i = 0; i < issueIds.size(); i++) {
+        for (int i = 0; i < issueIds.size(); i++) {
             Long issueId = issueIds.get(i);
-            if(issueRepository.findById(issueId).getIscompleted()) {
+            if (issueRepository.findById(issueId).getIscompleted()) {
                 completedIssues++;
             }
+        }
+
+        long totalIssue = issueIds.size();
+        long completeIssue = completedIssues;
+
+        if(totalIssue == completeIssue) {
+            System.out.println("completeIssue = " + completeIssue);
+            System.out.println("totalIssue = " + totalIssue);
+            epicRepository.findById(epicId).setIsCompleted(true);
+        } else {
+            epicRepository.findById(epicId).setIsCompleted(false);
         }
 
         Map<String, Long> result = new HashMap<>();
@@ -67,12 +78,12 @@ public class EpicService {
 
         List<Long> issueIds = epic.getIssueIds();
         List<String> issueTitles = new ArrayList<>();
-        for(int i = 0; i < issueIds.size(); i++) {
+        for (int i = 0; i < issueIds.size(); i++) {
             issueTitles.add(issueRepository.findById(issueIds.get(i)).getTitle());
         }
         editEpicDTO.getSubIssueTitle().addAll(issueTitles);
 
-        for(int i = 0; i < epic.getDependency().size(); i++) {
+        for (int i = 0; i < epic.getDependency().size(); i++) {
             editEpicDTO.getDependency().put(Long.valueOf(i), issueRepository.findById(epic.getDependency().get(Long.valueOf(i))).getTitle());
         }
         editEpicDTO.setEpicProgressStatus(this.epicProgressStatus(epicId));
@@ -104,7 +115,7 @@ public class EpicService {
 
         List<Long> issueIds = epicRepository.findById(epicId).getIssueIds();
         List<KanbanboardIssueDTO> kanbanboardIssueDTOs = new ArrayList<>();
-        for(int i = 0; i < issueIds.size(); i++) {
+        for (int i = 0; i < issueIds.size(); i++) {
             KanbanboardIssueDTO kanbanboardIssueDTO = new KanbanboardIssueDTO();
             kanbanboardIssueDTO.setIssueId(issueIds.get(i));
             kanbanboardIssueDTO.setIssueTitle(issueRepository.findById(issueIds.get(i)).getTitle());
@@ -113,7 +124,7 @@ public class EpicService {
             Map<String, String> mainMemberNameAndColor = new HashMap<>();
 
             // 담당자 별로 색상 지정
-            if(memberColorMap.get(issueRepository.findById(issueIds.get(i)).getMainMemberName()) != null) {
+            if (memberColorMap.get(issueRepository.findById(issueIds.get(i)).getMainMemberName()) != null) {
                 mainMemberNameAndColor.put(issueRepository.findById(issueIds.get(i)).getMainMemberName(), memberColorMap.get(issueRepository.findById(issueIds.get(i)).getMainMemberName()));
             } else {
                 memberColorMap.put(issueRepository.findById(issueIds.get(i)).getMainMemberName(), generateRandomColor());
@@ -137,18 +148,28 @@ public class EpicService {
     }
 
     public KanbanboardEditIssueDTO editKanbanboard(Long epicId, Long issueId, String progressStatus) {
-        if(progressStatus.equals("Done")) {
+        if (progressStatus.equals("Done")) {
             issueRepository.findById(issueId).setProgressStatus(progressStatus);
             issueRepository.findById(issueId).setIscompleted(true);
 
             Epic epic = epicRepository.findById(epicId);
             Map<String, Long> epicProgressStatus = epicProgressStatus(epicId);
-            if(epicProgressStatus.get("totalIssues").equals(epicProgressStatus.get("totalIssues"))) {
+            if (epicProgressStatus.get("totalIssues").equals(epicProgressStatus.get("completedIssues"))) {
                 epic.setIsCompleted(true);
+            } else {
+                epic.setIsCompleted(false);
             }
         } else {
             issueRepository.findById(issueId).setProgressStatus(progressStatus);
             issueRepository.findById(issueId).setIscompleted(false);
+
+            Epic epic = epicRepository.findById(epicId);
+            Map<String, Long> epicProgressStatus = epicProgressStatus(epicId);
+            if (epicProgressStatus.get("totalIssues").equals(epicProgressStatus.get("completedIssues"))) {
+                epic.setIsCompleted(true);
+            } else {
+                epic.setIsCompleted(false);
+            }
         }
 
         KanbanboardEditIssueDTO editIssueDTO = new KanbanboardEditIssueDTO();
@@ -161,7 +182,7 @@ public class EpicService {
     public SprintRetrospective submitRetrospective(SubmitRetrospectiveDTO submitRetrospectiveDTO, Long projectId, Long epicId) {
         SprintRetrospective submit = sprintRetrospectiveRepository.findByEpicId(epicId);
 
-        if(submit == null) {
+        if (submit == null) {
             return new SprintRetrospective();
         }
 
@@ -172,9 +193,9 @@ public class EpicService {
         Long completeMemberCount = submit.getCompleteMemberCount();
         submit.setCompleteMemberCount(completeMemberCount + 1);
 
-        if(submit.getCompleteMemberCount().equals(submit.getTotalMemberCount())) {
+        if (submit.getCompleteMemberCount().equals(submit.getTotalMemberCount())) {
             List<Long> membersId = projectRepository.findById(projectId).getMembersId();
-            for(Long memberId : membersId) {
+            for (Long memberId : membersId) {
                 Member member = memberRepository.findById(memberId);
                 member.getSprintRetrospectives().put(epicId, submit);
             }

@@ -60,7 +60,6 @@ public class MemberService {
                 }
             }
             epicRatio.put("completedEpics", completedEpics);
-
             epicRatio.put("projectId", projectId);
 
             result.put(projectRepository.findById(projectId).getProjectName(), epicRatio);
