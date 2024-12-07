@@ -87,6 +87,10 @@ public class EpicController {
         }
 
         KanbanboardEditIssueDTO kanbanboardEditIssueDTO1 = epicService.editKanbanboard(epicId, issueId, kanbanboardEditIssueDTO.getProgressStatus());
+        if (kanbanboardEditIssueDTO1 == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ApiResponse("fail", "의존관계를 위반하였습니다"));
+        }
+
         return ResponseEntity.ok(new ApiResponse("success", kanbanboardEditIssueDTO1));
     }
 

@@ -149,6 +149,17 @@ public class EpicService {
 
     public KanbanboardEditIssueDTO editKanbanboard(Long epicId, Long issueId, String progressStatus) {
         if (progressStatus.equals("Done")) {
+
+            Map<Long, Long> dependency = epicRepository.findById(epicId).getDependency();
+            if(!dependency.isEmpty() && dependency.get(1L).equals(issueId)) {
+                if(issueRepository.findById(dependency.get(0L)).getProgressStatus().equals("Done")) {
+                    epicRepository.findById(epicId).getDependency().remove(0L);
+                    epicRepository.findById(epicId).getDependency().remove(1L);
+                } else {
+                    return null;
+                }
+            }
+
             issueRepository.findById(issueId).setProgressStatus(progressStatus);
             issueRepository.findById(issueId).setIscompleted(true);
 

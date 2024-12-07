@@ -38,6 +38,10 @@ public class IssueController {
         }
 
         EditIssueDTO editIssueDTO = issueService.correctionIssue(newIssueDTO, epicId, issueId);
+        if(editIssueDTO == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse("fail", "의존관계 위반"));
+        }
+
         return ResponseEntity.ok(new ApiResponse("success", editIssueDTO));
     }
 

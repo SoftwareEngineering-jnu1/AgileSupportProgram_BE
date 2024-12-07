@@ -25,6 +25,10 @@ public class IssueService {
     }
 
     public EditIssueDTO correctionIssue(NewIssueDTO newIssueDTO, Long epicId , Long issueId) {
+        if(epicService.editKanbanboard(epicId, issueId, newIssueDTO.getProgressStatus()) == null) {
+            return null;
+        }
+
         Issue result = issueRepository.edit(newIssueDTO, issueId);
         Map<String, Long> epicProgressStatus = epicService.epicProgressStatus(epicId);
 
