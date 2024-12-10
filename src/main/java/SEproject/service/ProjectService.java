@@ -52,6 +52,7 @@ public class ProjectService {
             result.get(i).setEpicStartDate(epic.getStartDate());
             result.get(i).setEpicEndDate(epic.getEndDate());
             result.get(i).setEpicProgressStatus(epicService.epicProgressStatus(epic.getId()));
+            result.get(i).setEpicId(epic.getId());
 
             List<Long> issueIds = epic.getIssueIds();
             for(int j = 0; j < issueIds.size(); j++) {

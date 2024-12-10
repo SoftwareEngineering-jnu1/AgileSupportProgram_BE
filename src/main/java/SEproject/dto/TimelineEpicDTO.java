@@ -16,4 +16,5 @@ public class TimelineEpicDTO {
     private LocalDate epicEndDate;
     private Map<String, Long> epicProgressStatus = new HashMap<>();
     private List<TimelineIssueDTO> issues = new ArrayList<>();
+    private Long epicId;
 }
