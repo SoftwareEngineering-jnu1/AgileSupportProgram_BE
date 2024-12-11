@@ -61,6 +61,7 @@ public class ProjectService {
                 timelineIssueDTO.setIssueTitle(issue.getTitle());
                 timelineIssueDTO.setIssueStartDate(issue.getStartDate());
                 timelineIssueDTO.setIssueEndDate(issue.getEndDate());
+                timelineIssueDTO.setIssueId(issue.getId());
                 if(!epic.getDependency().isEmpty() && (epic.getDependency().get(0L).equals(issue.getId()) || epic.getDependency().get(1L).equals(issue.getId()))) {
                     timelineIssueDTO.setHasDependency(true);
                 } else {
