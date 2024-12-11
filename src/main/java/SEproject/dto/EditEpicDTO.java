@@ -1,5 +1,6 @@
 package SEproject.dto;
 
+import SEproject.domain.Issue;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,4 +19,5 @@ public class EditEpicDTO {
     private List<String> subIssueTitle = new ArrayList<>();
     private Map<Long, String> dependency = new HashMap<>();
     private Map<String, Long> epicProgressStatus = new HashMap<>();
+    private List<Issue> subIssues = new ArrayList<>();
 }

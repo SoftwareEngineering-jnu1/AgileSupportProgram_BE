@@ -1,6 +1,7 @@
 package SEproject.service;
 
 import SEproject.domain.Epic;
+import SEproject.domain.Issue;
 import SEproject.domain.Member;
 import SEproject.domain.SprintRetrospective;
 import SEproject.dto.*;
@@ -77,11 +78,20 @@ public class EpicService {
         editEpicDTO.setTitle(epic.getTitle());
 
         List<Long> issueIds = epic.getIssueIds();
+        for (int i = 0; i < issueIds.size(); i++) {
+            Long issueId = issueIds.get(i);
+            Issue issue = issueRepository.findById(issueId);
+            editEpicDTO.getSubIssues().add(issue);
+        }
+
+        /*
+        List<Long> issueIds = epic.getIssueIds();
         List<String> issueTitles = new ArrayList<>();
         for (int i = 0; i < issueIds.size(); i++) {
             issueTitles.add(issueRepository.findById(issueIds.get(i)).getTitle());
         }
         editEpicDTO.getSubIssueTitle().addAll(issueTitles);
+         */
 
         for (int i = 0; i < epic.getDependency().size(); i++) {
             editEpicDTO.getDependency().put(Long.valueOf(i), issueRepository.findById(epic.getDependency().get(Long.valueOf(i))).getTitle());
