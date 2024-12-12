@@ -49,8 +49,11 @@ public class EpicService {
 
         long totalIssue = issueIds.size();
         long completeIssue = completedIssues;
+        System.out.println("epicId = " + epicId);
+        System.out.println("issueIds = " + issueIds.size());
+        System.out.println("completeIssue = " + completeIssue);
 
-        if(totalIssue == completeIssue) {
+        if(completeIssue != 0L && totalIssue == completeIssue) {
             epicRepository.findById(epicId).setIsCompleted(true);
         } else {
             epicRepository.findById(epicId).setIsCompleted(false);
