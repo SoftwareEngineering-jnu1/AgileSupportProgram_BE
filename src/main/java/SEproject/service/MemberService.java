@@ -62,6 +62,11 @@ public class MemberService {
             epicRatio.put("completedEpics", completedEpics);
             epicRatio.put("projectId", projectId);
 
+            Long totalMember = 0L;
+            List<Long> membersId = projectRepository.findById(projectId).getMembersId();
+            epicRatio.put("totalMember", Long.valueOf(membersId.size()));
+
+
             result.put(projectRepository.findById(projectId).getProjectName(), epicRatio);
         }
 

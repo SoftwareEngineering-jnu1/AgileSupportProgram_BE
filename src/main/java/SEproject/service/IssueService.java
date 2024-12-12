@@ -21,6 +21,7 @@ public class IssueService {
     }
 
     public Issue createIssue(NewIssueDTO newIssueDTO, Long epicId) {
+        epicService.epicProgressStatus(epicId);
         return issueRepository.save(newIssueDTO, epicId);
     }
 

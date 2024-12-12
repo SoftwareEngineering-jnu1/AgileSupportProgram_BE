@@ -54,6 +54,9 @@ public class MemoryIssueRepository implements IssueRepository {
             issue.setMainMemberName(null);
         }
         issue.setProgressStatus(newIssueDTO.getProgressStatus());
+        if(issue.getProgressStatus().equals("Done")) {
+            issue.setIscompleted(true);
+        }
         epicRepository.findById(epicId).getIssueIds().add(issue.getId());
 
         store.put(issue.getId(), issue);
