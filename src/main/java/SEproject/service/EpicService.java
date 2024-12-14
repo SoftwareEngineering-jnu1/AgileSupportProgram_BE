@@ -215,13 +215,13 @@ public class EpicService {
         Long completeMemberCount = submit.getCompleteMemberCount();
         submit.setCompleteMemberCount(completeMemberCount + 1);
 
-        if (submit.getCompleteMemberCount().equals(submit.getTotalMemberCount())) {
+
             List<Long> membersId = projectRepository.findById(projectId).getMembersId();
             for (Long memberId : membersId) {
                 Member member = memberRepository.findById(memberId);
                 member.getSprintRetrospectives().put(epicId, submit);
             }
-        }
+
 
         return submit;
     }
